@@ -3,14 +3,14 @@ import 'package:flutter_multiple_tracks/services/models/track_options.dart';
 import 'package:flutter_multiple_tracks/services/providers/track_options_provider.dart';
 import 'package:provider/provider.dart';
 
-class TrackSettings extends StatefulWidget {
-  const TrackSettings({super.key});
+class TrackPlaylists extends StatefulWidget {
+  const TrackPlaylists({super.key});
 
   @override
-  State<TrackSettings> createState() => _TrackSettingsState();
+  State<TrackPlaylists> createState() => _TrackPlaylistsState();
 }
 
-class _TrackSettingsState extends State<TrackSettings> {
+class _TrackPlaylistsState extends State<TrackPlaylists> {
   bool isTrackOn = true;
   bool useGlobalPitch = true;
   bool useGlobalTempo = true;
@@ -96,15 +96,14 @@ class _TrackSettingsState extends State<TrackSettings> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      final providerVal = context.read<TrackOptionsProvider>();
-                      providerVal.updateOptions(
-                        TrackOptions(
-                          volume: providerVal.options.volume,
-                          isTrackOn: isTrackOn,
-                          useGlobalPitch: useGlobalPitch,
-                          useGlobalTempo: useGlobalTempo,
-                        ),
-                      );
+                      context.read<TrackOptionsProvider>().updateOptions(
+                            TrackOptions(
+                              volume: 1,
+                              isTrackOn: isTrackOn,
+                              useGlobalPitch: useGlobalPitch,
+                              useGlobalTempo: useGlobalTempo,
+                            ),
+                          );
                       Navigator.pop(context);
                     },
                     child: const Text(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
 import 'package:flutter_multiple_tracks/widgets/master_row.dart';
+import 'package:flutter_multiple_tracks/widgets/track_row.dart';
 import 'package:provider/provider.dart';
 
 class SoundBlendHome extends StatelessWidget {
@@ -26,9 +27,17 @@ class SoundBlendHome extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.all(10),
               child: MasterRow(),
-            )
+            ),
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: Divider(),
+            ),
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: TrackRow(),
+            ),
           ],
         ),
       ),
