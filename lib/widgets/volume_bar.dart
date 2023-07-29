@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_multiple_tracks/services/providers/track_options_provider.dart';
+import 'package:flutter_multiple_tracks/services/providers/playlist_provider.dart';
 import 'package:provider/provider.dart';
 
 class VolumeBar extends StatelessWidget {
@@ -7,13 +7,12 @@ class VolumeBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TrackOptionsProvider>(builder: (context, provider, child) {
+    return Consumer<TrackPlaylistsStatus>(builder: (context, provider, child) {
       return SliderTheme(
         data: SliderThemeData(
           overlayShape: SliderComponentShape.noOverlay,
         ),
         child: Row(
-          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             InkWell(
               child: Icon(
@@ -24,7 +23,7 @@ class VolumeBar extends StatelessWidget {
                       ? Colors.grey.withOpacity(0.5)
                       : Colors.grey),
               onTap: () {
-                context.read<TrackOptionsProvider>().setVolume(0);
+                context.read<TrackPlaylistsStatus>().setVolume(0);
               },
             ),
             Slider(
@@ -32,7 +31,7 @@ class VolumeBar extends StatelessWidget {
               max: 1.00,
               min: 0.00,
               onChanged: (double value) {
-                context.read<TrackOptionsProvider>().setVolume(value);
+                context.read<TrackPlaylistsStatus>().setVolume(value);
               },
             ),
             InkWell(
@@ -43,7 +42,7 @@ class VolumeBar extends StatelessWidget {
                     : Colors.grey.withOpacity(0.7),
               ),
               onTap: () {
-                context.read<TrackOptionsProvider>().setVolume(1);
+                context.read<TrackPlaylistsStatus>().setVolume(1);
               },
             ),
           ],

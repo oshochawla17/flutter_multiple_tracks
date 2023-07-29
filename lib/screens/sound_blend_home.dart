@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:flutter_multiple_tracks/services/bloc/master_bloc/master.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
 import 'package:flutter_multiple_tracks/widgets/master_row.dart';
 import 'package:flutter_multiple_tracks/widgets/track_row.dart';
@@ -14,11 +16,18 @@ class SoundBlendHome extends StatelessWidget {
         // title: const Text('Sound Blend'),
         title: Container(),
       ),
-      body: ChangeNotifierProvider(
-        create: (context) => GlobalOptionsProvider(),
+      body: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<GlobalOptionsProvider>(
+            create: (context) => GlobalOptionsProvider(),
+          ),
+          // BlocProvider<MasterBloc>(
+          //   create: (context) => MasterBloc(),
+          // ),
+        ],
         child: Column(
-          children: const [
-            Text(
+          children: [
+            const Text(
               'Sound Blend',
               style: TextStyle(
                 fontSize: 24,
@@ -26,17 +35,27 @@ class SoundBlendHome extends StatelessWidget {
                 color: Colors.blue,
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(10),
               child: MasterRow(),
             ),
-            Padding(
-              padding: EdgeInsets.all(10),
+            const Padding(
+              padding: EdgeInsets.all(0),
               child: Divider(),
             ),
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: TrackRow(),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: ListView.builder(
+                  itemCount: 6,
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  physics: const ClampingScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return TrackRow(index: index);
+                  },
+                ),
+              ),
             ),
           ],
         ),
