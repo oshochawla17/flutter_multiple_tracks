@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_multiple_tracks/services/models/playlists_file.dart';
 import 'package:flutter_multiple_tracks/services/providers/playlist_provider.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -13,7 +14,7 @@ class TrackPlaylistComponent extends StatefulWidget {
 }
 
 class _TrackPlaylistComponentState extends State<TrackPlaylistComponent> {
-  List<String> files = [];
+  List<PlaylistFile> files = [];
   @override
   void initState() {
     files = widget.playlist.files;
@@ -39,7 +40,9 @@ class _TrackPlaylistComponentState extends State<TrackPlaylistComponent> {
 
             if (result != null) {
               if (result.files.single.path != null) {
-                widget.playlist.addFile(result.files.single.path!);
+                widget.playlist.addFile(PlaylistFile(
+                    name: result.files.single.name,
+                    path: result.files.single.path!));
               }
             } else {
               // User canceled the picker
@@ -63,7 +66,10 @@ class _TrackPlaylistComponentState extends State<TrackPlaylistComponent> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        'File ${index + 1}',
+                        // use max 15 char for file name
+                        widget.playlist.files[index].name.length > 15
+                            ? widget.playlist.files[index].name.substring(0, 15)
+                            : widget.playlist.files[index].name,
                       ),
                       const SizedBox(width: 10),
                       InkWell(

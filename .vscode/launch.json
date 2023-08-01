@@ -8,7 +8,14 @@
             "name": "iPhone 13 pro",
             "request": "launch",
             "type": "dart",
-            "deviceId": "00008110-001A40290EEA801E"
+            "deviceId": "00008110-001A40290EEA801E",
+            
+        },
+        {
+            "name": "oneplus a5010",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "b69f9420"
         },
         {
             "name": "flutter_multiple_tracks (profile mode)",

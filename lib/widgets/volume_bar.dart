@@ -16,14 +16,16 @@ class VolumeBar extends StatelessWidget {
           children: [
             InkWell(
               child: Icon(
-                  provider.options.volume == 0
+                  provider.options.isMute
                       ? Icons.volume_off
                       : Icons.volume_down,
-                  color: provider.options.volume == 0
+                  color: provider.options.isMute
                       ? Colors.grey.withOpacity(0.5)
                       : Colors.grey),
               onTap: () {
-                context.read<TrackPlaylistsStatus>().setVolume(0);
+                provider.options.isMute
+                    ? context.read<TrackPlaylistsStatus>().unmute()
+                    : context.read<TrackPlaylistsStatus>().mute();
               },
             ),
             Slider(

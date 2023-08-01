@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_multiple_tracks/services/models/sound_blend_global_options.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +35,7 @@ class _MainSettingsState extends State<MainSettings> {
         children: <Widget>[
           const Text('Fine Tune'),
           Padding(
-            padding: const EdgeInsets.only(top: 5.0),
+            padding: const EdgeInsets.only(top: 15.0),
             child: Row(
               children: [
                 const SizedBox(width: 55, child: Text('Pitch:')),
@@ -54,7 +53,7 @@ class _MainSettingsState extends State<MainSettings> {
                 ),
                 Expanded(
                   child: Slider(
-                    value: pitch,
+                    value: pitch.toDouble(),
                     label: pitch.toString(),
                     max: 12.00,
                     min: -12.00,
@@ -62,6 +61,11 @@ class _MainSettingsState extends State<MainSettings> {
                       setState(() {
                         pitch = value;
                       });
+                      context.read<GlobalOptionsProvider>().updateOptions(
+                          context
+                              .read<GlobalOptionsProvider>()
+                              .options
+                              .copyWith(pitch: value));
                     },
                   ),
                 )
@@ -89,32 +93,23 @@ class _MainSettingsState extends State<MainSettings> {
                   child: Slider(
                     value: tempo,
                     label: '${(tempo * 100).toStringAsFixed(0)}%',
-                    divisions: 3,
                     max: 2,
                     min: 0.5,
                     onChanged: (double value) {
                       setState(() {
                         tempo = value;
                       });
+                      context.read<GlobalOptionsProvider>().updateOptions(
+                          context
+                              .read<GlobalOptionsProvider>()
+                              .options
+                              .copyWith(tempo: value));
                     },
                   ),
                 )
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 2.0),
-            child: ElevatedButton(
-              onPressed: () {
-                context.read<GlobalOptionsProvider>().updateOptions(
-                    SoundBlendGlobalOptions(pitch: pitch, tempo: tempo));
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'Apply',
-              ),
-            ),
-          )
         ],
       ),
     );

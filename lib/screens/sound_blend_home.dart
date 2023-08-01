@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_multiple_tracks/services/bloc/master_bloc/master.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
+import 'package:flutter_multiple_tracks/services/providers/global_track_status.dart';
 import 'package:flutter_multiple_tracks/widgets/master_row.dart';
 import 'package:flutter_multiple_tracks/widgets/track_row.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ class SoundBlendHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         // title: const Text('Sound Blend'),
         title: Container(),
@@ -21,9 +23,9 @@ class SoundBlendHome extends StatelessWidget {
           ChangeNotifierProvider<GlobalOptionsProvider>(
             create: (context) => GlobalOptionsProvider(),
           ),
-          // BlocProvider<MasterBloc>(
-          //   create: (context) => MasterBloc(),
-          // ),
+          ChangeNotifierProvider<GlobalTrackStatus>(
+            create: (context) => GlobalTrackStatus(),
+          ),
         ],
         child: Column(
           children: [
@@ -43,6 +45,19 @@ class SoundBlendHome extends StatelessWidget {
               padding: EdgeInsets.all(0),
               child: Divider(),
             ),
+            Container(
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Consumer<GlobalTrackStatus>(
+                  builder: (context, provider, child) {
+                return InkWell(
+                  onTap: () {
+                    provider.clearTracks();
+                  },
+                  child: const Icon(Icons.delete, color: Colors.red),
+                );
+              }),
+            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -52,7 +67,11 @@ class SoundBlendHome extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const ClampingScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return TrackRow(index: index);
+                    return ChangeNotifierProvider.value(
+                        value: context
+                            .read<GlobalTrackStatus>()
+                            .playlistsStatus[index],
+                        child: TrackRow(index: index));
                   },
                 ),
               ),
