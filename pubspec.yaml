@@ -37,8 +37,8 @@ dependencies:
   mime: ^1.0.4
   provider: ^6.0.5
   ffi: ^1.2.1
-  flutter_sequencer: ^0.4.4
-  flutter_midi: ^1.1.0
+  # flutter_sequencer: ^0.4.4
+  # flutter_midi: ^1.1.0
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_lints: ^2.0.0

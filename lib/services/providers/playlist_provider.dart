@@ -2,12 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_midi/flutter_midi.dart';
+// import 'package:flutter_midi/flutter_midi.dart';
 import 'package:flutter_multiple_tracks/services/models/playlists_file.dart';
 import 'package:flutter_multiple_tracks/services/models/track_options.dart';
-import 'package:flutter_sequencer/models/instrument.dart';
-import 'package:flutter_sequencer/models/sfz.dart';
-import 'package:flutter_sequencer/sequence.dart';
+// import 'package:flutter_sequencer/models/instrument.dart';
+// import 'package:flutter_sequencer/models/sfz.dart';
+// import 'package:flutter_sequencer/sequence.dart';
 import 'package:just_audio/just_audio.dart';
 // import 'package:audioplayers/audioplayers.dart';
 
@@ -36,18 +36,6 @@ class TrackPlaylistsStatus extends ChangeNotifier {
   void updateOptions(TrackOptions options) {
     this.options = options;
     notifyListeners();
-  }
-
-  FlutterMidi midi = FlutterMidi();
-  void loadSf2(String asset) async {
-    ByteData byte = await rootBundle.load(asset);
-    print(byte);
-    await midi.prepare(
-      sf2: byte,
-    );
-    // await midi.playMidiNote(
-    //   midi: 60,
-    // );
   }
 
   List<Future<void> Function()> play() {
@@ -106,7 +94,6 @@ class TrackPlaylistsStatus extends ChangeNotifier {
     for (var playlist in playlists) {
       if (playlist.files.isEmpty) continue;
       isPlaying = true;
-      playlist.sequence.play();
       futures.add(playlist.player.play);
     }
     notifyListeners();
@@ -200,8 +187,8 @@ class TrackPlaylist {
   AudioPlayer player = AudioPlayer();
 
   List<PlaylistFile> files = [];
-  List<Instrument> instruments = [];
-  final sequence = Sequence(tempo: 100.0, endBeat: 2.0);
+  // List<Instrument> instruments = [];
+  // final sequence = Sequence(tempo: 100.0, endBeat: 2.0);
 
   void load() async {
     // await player.setPitch(2);
