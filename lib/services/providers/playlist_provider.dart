@@ -1,15 +1,15 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-// import 'package:flutter_midi/flutter_midi.dart';
 import 'package:flutter_multiple_tracks/services/models/playlists_file.dart';
 import 'package:flutter_multiple_tracks/services/models/track_options.dart';
-// import 'package:flutter_sequencer/models/instrument.dart';
-// import 'package:flutter_sequencer/models/sfz.dart';
-// import 'package:flutter_sequencer/sequence.dart';
-import 'package:just_audio/just_audio.dart';
-// import 'package:audioplayers/audioplayers.dart';
+import 'package:media_kit/media_kit.dart';
+// import 'package:just_audio/just_audio.dart';
+
+class MyPlaylist {
+  void add() {}
+  void removeAtIndex(int index) {}
+}
 
 class TrackPlaylistsStatus extends ChangeNotifier {
   TrackPlaylistsStatus({this.isPlaying = false});
@@ -39,62 +39,13 @@ class TrackPlaylistsStatus extends ChangeNotifier {
   }
 
   List<Future<void> Function()> play() {
-    // loadSf2("assets/SFZ/Piano.sf2");
-    // return [];
-    // // add all plays to futures
-    // final instruments = [
-    //   // Sf2Instrument(path: "tabla2.sf2", isAsset: true),
-    //   SfzInstrument(
-    //     path: "assets/SFZ/ektaal.sfz",
-    //     isAsset: true,
-    //     // tuningPath: "assets/sfz/meanquar.scl",
-    //   ),
-    //   RuntimeSfzInstrument(
-    //     id: "Sampled Synth",
-    //     sampleRoot: "assets/SFZ/ektaal_samples",
-    //     isAsset: true,
-    //     sfz: Sfz(
-    //       groups: [
-    //         SfzGroup(
-    //           regions: [
-    //             SfzRegion(
-    //               sample: "ektaal_samples.wav",
-    //               otherOpcodes: {
-    //                 "oscillator_multi": "5",
-    //                 "oscillator_detune": "50",
-    //               },
-    //             ),
-    //           ],
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    //   // RuntimeSfzInstrument(
-    //   //     id: "Generated Synth",
-    //   //     sampleRoot: "/",
-    //   //     isAsset: false,
-    //   //     sfz: Sfz(groups: [
-    //   //       SfzGroup(regions: [
-    //   //         SfzRegion(sample: "*saw", otherOpcodes: {
-    //   //           "oscillator_multi": "5",
-    //   //           "oscillator_detune": "50",
-    //   //         })
-    //   //       ])
-    //   //     ])
-    //   //   ),
-    // ];
-    // final sequence = Sequence(tempo: 100.0, endBeat: 8.0);
-    // sequence.createTracks(instruments).then((tracks) {
-    //   tracks.forEach((track) {});
-    //   sequence.play();
-    // });
-    // return [];
     List<Future<void> Function()> futures = [];
 
     for (var playlist in playlists) {
       if (playlist.files.isEmpty) continue;
       isPlaying = true;
       futures.add(playlist.player.play);
+      // playlist.player.play();
     }
     notifyListeners();
     return futures;
@@ -109,14 +60,15 @@ class TrackPlaylistsStatus extends ChangeNotifier {
   }
 
   Future<void> handleStop(TrackPlaylist playlist) async {
-    await playlist.player.stop();
-    playlist.player.setAudioSource(playlist.playlist);
+    await playlist.player.jump(0);
+    await playlist.player.pause();
+    // playlist.player.setAudioSource(playlist.playlist);
   }
 
   void setVolume(double volume) {
     if (options.isMute) options = options.copyWith(isMute: false);
     for (var playlist in playlists) {
-      playlist.player.setVolume(volume);
+      playlist.player.setVolume(volume * 100);
     }
     options = options.copyWith(volume: volume);
     notifyListeners();
@@ -141,7 +93,7 @@ class TrackPlaylistsStatus extends ChangeNotifier {
 
   void setTempo(double val) {
     for (var playlist in playlists) {
-      playlist.player.setSpeed(val);
+      playlist.player.setRate(val);
     }
   }
 
@@ -160,7 +112,8 @@ class TrackPlaylistsStatus extends ChangeNotifier {
     try {
       for (var playlist in playlists) {
         playlist.player.stop();
-        playlist.playlist.clear();
+        // playlist.playlist.clear();
+        // playlist.player.
         playlist.files.clear();
       }
     } catch (e) {
@@ -178,56 +131,49 @@ class TrackPlaylist {
     load();
   }
 
-  ConcatenatingAudioSource playlist = ConcatenatingAudioSource(
-    useLazyPreparation: true,
-    shuffleOrder: DefaultShuffleOrder(),
-    children: [],
-  );
+  // ConcatenatingAudioSource playlist = ConcatenatingAudioSource(
+  //   useLazyPreparation: true,
+  //   shuffleOrder: DefaultShuffleOrder(),
+  //   children: [],
+  // );
 
-  AudioPlayer player = AudioPlayer();
+  // AudioPlayer player = AudioPlayer();
+  final Player player = Player(
+      configuration: const PlayerConfiguration(
+    pitch: true,
+  ));
 
   List<PlaylistFile> files = [];
-  // List<Instrument> instruments = [];
-  // final sequence = Sequence(tempo: 100.0, endBeat: 2.0);
 
   void load() async {
-    // await player.setPitch(2);
-    await player.setAudioSource(playlist);
-    await player.setLoopMode(LoopMode.all);
-    await player.setVolume(1);
-    // player.audioSource.
+    await player.setPlaylistMode(
+      PlaylistMode.loop,
+    );
   }
 
   void setVolume(double volume) {
     player.setVolume(volume);
   }
 
-  void addFile(PlaylistFile file) {
-    playlist.add(AudioSource.uri(Uri.file(file.path)));
-    files.add(file);
-    // try {
-    //   instruments.add(
-    //     Sf2Instrument(
-    //       path: file.path,
-    //       isAsset: false,
-    //     ),
-    //   );
+  Playlist playlist = Playlist([]);
+  void addFile(PlaylistFile file) async {
+    // playlist.add(AudioSource.uri(Uri.file(file.path)));
+    // await player.add(Media(file.path));
+    player.open(Playlist([...player.state.playlist.medias, Media(file.path)]),
+        play: player.state.playing);
+    if (player.state.playlist.medias.isEmpty) {
+      // await player.open(Playlist([Media(file.path)]), play: false);
+    } else {
+      // await player.add(Media(file.path));
+    }
 
-    //   sequence.createTracks(instruments);
-    // } catch (err) {
-    //   // print(err);
-    // }
-    // instruments.add(RuntimeSfzInstrument(
-    //   id: file.name,
-    //   isAsset: false,
-    //   sampleRoot: '/',
-    //   sfz: null,
-    // ));
+    files.add(file);
   }
 
   void removeFile(PlaylistFile file) {
     if (files.isEmpty) return;
-    playlist.removeAt(files.indexOf(file));
+    // playlist.removeAt(files.indexOf(file));
+    player.remove(files.indexOf(file));
     files.remove(file);
     if (files.isEmpty) {
       player.stop();
