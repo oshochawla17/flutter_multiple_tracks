@@ -4,12 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_multiple_tracks/services/models/playlists_file.dart';
 import 'package:flutter_multiple_tracks/services/models/track_options.dart';
 import 'package:media_kit/media_kit.dart';
-// import 'package:just_audio/just_audio.dart';
-
-class MyPlaylist {
-  void add() {}
-  void removeAtIndex(int index) {}
-}
 
 class TrackPlaylistsStatus extends ChangeNotifier {
   TrackPlaylistsStatus({this.isPlaying = false});
@@ -45,7 +39,6 @@ class TrackPlaylistsStatus extends ChangeNotifier {
       if (playlist.files.isEmpty) continue;
       isPlaying = true;
       futures.add(playlist.player.play);
-      // playlist.player.play();
     }
     notifyListeners();
     return futures;
@@ -62,7 +55,6 @@ class TrackPlaylistsStatus extends ChangeNotifier {
   Future<void> handleStop(TrackPlaylist playlist) async {
     await playlist.player.jump(0);
     await playlist.player.pause();
-    // playlist.player.setAudioSource(playlist.playlist);
   }
 
   void setVolume(double volume) {
@@ -155,7 +147,6 @@ class TrackPlaylist {
     player.setVolume(volume);
   }
 
-  Playlist playlist = Playlist([]);
   void addFile(PlaylistFile file) async {
     // playlist.add(AudioSource.uri(Uri.file(file.path)));
     // await player.add(Media(file.path));
