@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_multiple_tracks/services/models/music_scales.dart';
 
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
-import 'package:flutter_multiple_tracks/services/providers/global_track_status.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
-import 'package:flutter_multiple_tracks/services/providers/interfaces/tabla_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/tanpura_track.dart';
 import 'package:provider/provider.dart';
 

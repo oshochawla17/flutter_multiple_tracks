@@ -4,6 +4,7 @@ import 'package:flutter_multiple_tracks/services/models/instruments_library/inst
 import 'package:flutter_multiple_tracks/services/models/sound_blend_global_options.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/metronome_track.dart';
+import 'package:flutter_multiple_tracks/services/providers/interfaces/swarmandal_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/tabla_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/tanpura_track.dart';
 
@@ -13,10 +14,12 @@ class GlobalTrackStatus extends ChangeNotifier {
   bool isPlaying;
 
   List<InstrumentTrack> instruments = [
+    TanpuraTrack(),
+    TanpuraTrack(),
     TablaPakhawajTrack.tabla(),
     TablaPakhawajTrack.pakhawaj(),
-    TanpuraTrack(),
     MetronomeTrack(),
+    SwarmandalTrack(),
   ];
   void load(Map<Instruments, InstrumentLibrary> libraries) {
     for (var instrument in instruments) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/tanpura_track.dart';
 import 'package:provider/provider.dart';

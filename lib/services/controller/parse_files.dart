@@ -1,13 +1,14 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/instrument_file.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/metronome_file.dart';
+import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/swarmandal_file.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/tabla_pakhawaj_file.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/tanpura_file.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instruments_library.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/metronome_library.dart.dart';
+import 'package:flutter_multiple_tracks/services/models/instruments_library/swarmandal_library.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/tabla_pakhawaj_library.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/tanpura_library.dart';
 import 'package:flutter_multiple_tracks/services/models/music_scales.dart';
@@ -40,6 +41,9 @@ class FileParser {
       var splits = isTabla ? file.split('Tabla/') : file.split('Pakhawaj/');
       if (splits.length > 1) {
         var sub = splits[1].split('/');
+        if (sub.length < 2) {
+          return null;
+        }
         var subtype = sub[0];
         var fileName = sub[1];
         var tablaProps = fileName.split('-');
@@ -99,6 +103,45 @@ class FileParser {
     }
   }
 
+  static InstrumentFile? parseSwarmandalFile(String file) {
+    try {
+      // C#3-030-B2_-D#3-020-050-TT01.wav
+
+      var splits = file.split('Swarmandal/');
+      if (splits.length > 1) {
+        var sub = splits[1].split('/');
+        if (sub.length < 2) {
+          return null;
+        }
+        var subtype = sub[0];
+        var fileName = sub[1];
+        var tablaProps = fileName.split('-');
+        if (tablaProps.length == 4) {
+          // C#3-B2_-D#3-TT01.wav
+          var scale = tablaProps[0].replaceAll('_', '');
+          var rangeStart = tablaProps[1].replaceAll('_', '');
+          var rangeEnd = tablaProps[2];
+
+          return SwarmandalFile(
+            name: fileName,
+            path: file,
+            originalScale: Scale.fromString(scale),
+            subtype: subtype,
+            scaleRange: [
+              Scale.fromString(rangeStart),
+              Scale.fromString(rangeEnd)
+            ],
+            isSelected: true,
+          );
+        }
+      }
+      return null;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   static InstrumentFile? parseTanpuraFiles(String file) {
     try {
       var splits = file.split('Tanpura/');
@@ -136,6 +179,7 @@ class FileParser {
     }
     Map<String, List<TablaPakhawajFile>> tablaFiles = {};
     Map<String, List<TablaPakhawajFile>> pakhawajFiles = {};
+    Map<String, List<SwarmandalFile>> swarmandalFiles = {};
     Map<String, List<MetronomeFile>> metronomeFiles = {};
 
     List<TanpuraFile> tanpuraFiles = [];
@@ -168,6 +212,17 @@ class FileParser {
           }
           pakhawajFiles[subtype]!.add(parsedFile);
         }
+      } else if (file.contains('Swarmandal')) {
+        var parsedFile = parseSwarmandalFile(file);
+        if (parsedFile == null) {
+          continue;
+        }
+        parsedFile = parsedFile as SwarmandalFile;
+        var subtype = parsedFile.subtype;
+        if (swarmandalFiles[subtype] == null) {
+          swarmandalFiles[subtype] = [];
+        }
+        swarmandalFiles[subtype]!.add(parsedFile);
       } else if (file.contains('Tanpura')) {
         var parsedFile = parseTanpuraFiles(file);
         if (parsedFile == null) {
@@ -183,6 +238,8 @@ class FileParser {
     TablaPakhawajLibrary pakhawajLibrary = TablaPakhawajLibrary.pakhawaj(
       taalFiles: pakhawajFiles,
     );
+    SwarmandalLibrary swarmandalLibrary =
+        SwarmandalLibrary(raagFiles: swarmandalFiles);
     MetronomeLibrary metronomeLibrary =
         MetronomeLibrary(taalFiles: metronomeFiles);
     TanpuraLibrary tanpuraLibrary = TanpuraLibrary(files: tanpuraFiles);
@@ -191,6 +248,7 @@ class FileParser {
       Instruments.pakhawaj: pakhawajLibrary,
       Instruments.metronome: metronomeLibrary,
       Instruments.tanpura: tanpuraLibrary,
+      Instruments.swarmandal: swarmandalLibrary,
     };
   }
 }

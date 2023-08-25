@@ -55,7 +55,7 @@ class _TrackPlaylistComponentState extends State<TrackPlaylistComponent> {
                               ),
                               onTap: () {
                                 if (isSelected) {
-                                  widget.playlist.unslectFile(
+                                  widget.playlist.unselectFile(
                                       widget.playlist.files[index]);
                                 } else {
                                   widget.playlist
@@ -102,13 +102,7 @@ class _TrackPlaylistComponentState extends State<TrackPlaylistComponent> {
                               Icons.remove_circle,
                               size: 30,
                             ),
-                            onTap: () {
-                              widget.playlist
-                                  .removeFile(widget.playlist.files[index]);
-                              setState(() {
-                                files = widget.playlist.files;
-                              });
-                            },
+                            onTap: () {},
                           ),
                           const SizedBox(width: 10),
                           Text(widget.playlist.files[index].name),

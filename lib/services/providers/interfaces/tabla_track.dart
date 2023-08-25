@@ -9,7 +9,6 @@ import 'package:flutter_multiple_tracks/services/models/track_options.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/playlist_provider.dart';
 import 'package:flutter_multiple_tracks/utils/helper.dart';
-import 'package:media_kit/media_kit.dart';
 
 class TablaPakhawajTrack with ChangeNotifier implements InstrumentTrack {
   TablaPakhawajTrack(
@@ -39,8 +38,6 @@ class TablaPakhawajTrack with ChangeNotifier implements InstrumentTrack {
 
   bool isShuffle = false;
 
-  List<Media> get mediaFiles => _playlist.player.state.playlist.medias;
-
   @override
   TablaPakhawajFile? currentPlaying;
 
@@ -62,41 +59,21 @@ class TablaPakhawajTrack with ChangeNotifier implements InstrumentTrack {
   }
 
   @override
-  Future<bool> resetPlaylist() {
-    throw UnimplementedError();
-  }
-
-  @override
   List<Future<void> Function()> play() {
     List<Future<void> Function()> futures = [];
 
     for (var playlist in playlists) {
-      if (mediaFiles.isEmpty) continue;
+      if (playlist.selectedFiles.isEmpty) continue;
       futures.add(playlist.player.play);
     }
     return futures;
   }
 
-  // @override
-  // PlayerStream get playerStream {
-  //   return _playlist.player.stream;
-  // }
-
   @override
   Future<bool> stop() async {
-    if (_playlist.player.state.playlist.medias.isEmpty) {
-      await _playlist.player.stop();
-      return true;
-    } else {
-      var currentFiles = _playlist.player.state.playlist.medias
-          .map((e) => e.extras?['file'] as TablaPakhawajFile)
-          .toList();
+    await _playlist.resetPlaylist();
 
-      await _playlist.clearPlaylist();
-      await _playlist.addFiles(currentFiles);
-
-      return true;
-    }
+    return true;
   }
 
   @override
@@ -108,18 +85,18 @@ class TablaPakhawajTrack with ChangeNotifier implements InstrumentTrack {
 
     _playlist.player.stream.playing.listen((event) {
       isPlaying = event;
-      print('setting isPlaying to $event');
+
       notifyListeners();
     });
-    _playlist.player.stream.tracks.listen((event) {
-      int index = _playlist.player.state.playlist.index;
-      if (index >= _playlist.player.state.playlist.medias.length) {
-        currentPlaying = null;
-      } else {
-        currentPlaying =
-            _playlist.player.state.playlist.medias[index].extras?['file'];
+    _playlist.player.stream.playlist.listen((event) {
+      if (event.medias.isNotEmpty) {
+        currentPlaying = _playlist.files.firstWhere(
+                (element) => element.path == event.medias[event.index].uri)
+            as TablaPakhawajFile;
+
+        notifyListeners();
       }
-      notifyListeners();
+      // notifyListeners();
     });
   }
 
@@ -221,7 +198,7 @@ class TablaPakhawajTrack with ChangeNotifier implements InstrumentTrack {
 
   Future<bool> updatePlaylist(List<TablaPakhawajFile> files) async {
     if (library != null) {
-      await _playlist.clearPlaylist();
+      await _playlist.resetPlaylist();
       await _playlist.addFiles(files);
       return true;
     }
@@ -233,5 +210,12 @@ class TablaPakhawajTrack with ChangeNotifier implements InstrumentTrack {
     await _playlist.player.setShuffle(isShuffle);
     notifyListeners();
     return true;
+  }
+
+  @override
+  Future<void> resetPlaylist() async {
+    for (var element in playlists) {
+      element.resetPlaylist();
+    }
   }
 }

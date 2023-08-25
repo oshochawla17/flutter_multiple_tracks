@@ -10,7 +10,6 @@ import 'package:flutter_multiple_tracks/services/models/sound_blend_global_optio
 import 'package:flutter_multiple_tracks/services/models/track_options.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/playlist_provider.dart';
-import 'package:media_kit/media_kit.dart';
 
 class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   TanpuraTrack(
@@ -33,7 +32,6 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
 
   TanpuraLibrary? library;
   Scale? chosenScale;
-  List<Media> get mediaFiles => _playlists.first.player.state.playlist.medias;
 
   @override
   final Instruments instrument = Instruments.tanpura;
@@ -62,11 +60,6 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
 
     notifyListeners();
     return true;
-  }
-
-  @override
-  Future<bool> resetPlaylist() {
-    throw UnimplementedError();
   }
 
   bool lock = false;
@@ -115,7 +108,6 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
         timer.cancel();
         return;
       }
-      print('playing playlist: ${currentIndex + 1}');
       restartPlaylist(playlists[currentIndex]);
       if (currentIndex == playlists.length - 1) {
         timer.cancel();
@@ -158,35 +150,18 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
 
   Future<bool> stopPlaylist(TrackPlaylist playlist) async {
     stopPlaying = true;
-    if (playlist.player.state.playlist.medias.isEmpty) {
-      await playlist.player.stop();
-      return true;
-    } else {
-      var currentFiles = playlist.player.state.playlist.medias
-          .map((e) => e.extras?['file'] as TanpuraFile)
-          .toList();
-
-      await playlist.clearPlaylist();
-      await playlist.addFiles(currentFiles);
-
-      return true;
-    }
+    await playlist.resetPlaylist();
+    return true;
   }
 
   Future<bool> restartPlaylist(TrackPlaylist playlist) async {
     if (stopPlaying) return true;
     if (playlist.player.state.playing) {
-      var currentFiles = playlist.player.state.playlist.medias
-          .map((e) => e.extras?['file'] as TanpuraFile)
-          .toList();
-      await playlist.clearPlaylist();
-      await playlist.addFiles(currentFiles);
-      await playlist.player.play();
-      return true;
+      await playlist.resetPlaylist();
     } else {
       await playlist.player.play();
-      return true;
     }
+    return true;
   }
 
   @override
@@ -250,7 +225,7 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   Future<bool> updatePlaylist(
       TrackPlaylist playlist, List<TanpuraFile> files) async {
     if (library != null) {
-      await playlist.clearPlaylist();
+      await playlist.resetPlaylist();
       await playlist.addFiles(files);
       return true;
     }
@@ -308,5 +283,12 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
       await playTracksWithDelay();
     }
     return true;
+  }
+
+  @override
+  Future<void> resetPlaylist() async {
+    for (var element in playlists) {
+      element.resetPlaylist();
+    }
   }
 }

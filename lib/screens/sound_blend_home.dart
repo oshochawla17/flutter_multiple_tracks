@@ -51,19 +51,6 @@ class SoundBlendHome extends StatelessWidget {
               padding: EdgeInsets.all(0),
               child: Divider(),
             ),
-            Container(
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Consumer<GlobalTrackStatus>(
-                  builder: (context, provider, child) {
-                return InkWell(
-                  onTap: () {
-                    provider.clearTracks();
-                  },
-                  child: const Icon(Icons.delete, color: Colors.red),
-                );
-              }),
-            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),

@@ -3,9 +3,10 @@ import 'package:flutter_multiple_tracks/services/models/instruments.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_track_status.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
+import 'package:flutter_multiple_tracks/services/providers/interfaces/swarmandal_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/tabla_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/tanpura_track.dart';
-import 'package:flutter_multiple_tracks/utils/helper.dart';
+import 'package:flutter_multiple_tracks/widgets/raag_dropdown.dart';
 import 'package:flutter_multiple_tracks/widgets/taal_dropdown.dart';
 import 'package:flutter_multiple_tracks/widgets/tanpura_settings.dart';
 import 'package:flutter_multiple_tracks/widgets/tanupura_scale_dropdown.dart';
@@ -35,15 +36,7 @@ class TrackRow extends StatelessWidget {
     }
 
     return Consumer<InstrumentTrack>(builder: (context, provider, child) {
-      if (provider is TablaPakhawajTrack) {
-        print('Track row rebuild ${provider.instrument.name}');
-
-        print(
-            'Current pitch semitones:  ${AudioHelper.pitchFactorToSemitones(provider.playlists.first.player.state.pitch)}');
-        print('Current tempo:  ${provider.playlists.first.player.state.rate}');
-        print(
-            'Current media length:  ${provider.playlists.first.player.state.playlist.medias.length}');
-      }
+      if (provider is TablaPakhawajTrack) {}
       return Builder(builder: (context) {
         return Card(
           elevation: 2,
@@ -58,6 +51,23 @@ class TrackRow extends StatelessWidget {
                   Row(
                     children: [
                       const TaalDropdown(),
+                      Opacity(
+                        opacity: provider.isShuffle ? 1 : 0.5,
+                        child: InkWell(
+                            onTap: () {
+                              provider.taggleShuffle();
+                            },
+                            child: const Icon(
+                              Icons.shuffle,
+                              size: 35,
+                            )),
+                      )
+                    ],
+                  ),
+                if (provider is SwarmandalTrack)
+                  Row(
+                    children: [
+                      const RaagDropdown(),
                       Opacity(
                         opacity: provider.isShuffle ? 1 : 0.5,
                         child: InkWell(
@@ -197,8 +207,11 @@ class TrackRow extends StatelessWidget {
                         onStop: () => onStop(provider)),
                   ],
                 ),
-                Text(
-                    'Currently playing: ${provider.currentPlaying?.name ?? ''}'),
+                SizedBox(
+                  height: 30,
+                  child:
+                      Text('Playing: ${provider.currentPlaying?.name ?? ''}'),
+                ),
               ],
             ),
           ),

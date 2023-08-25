@@ -22,7 +22,7 @@ abstract class InstrumentTrack with ChangeNotifier {
 
   bool updateFromLocal(TrackOptions localOptions);
   void load(InstrumentLibrary library);
-  Future<bool> resetPlaylist();
+  Future<void> resetPlaylist();
   Future<bool> setPitch(int cents);
 
   InstrumentFile? get currentPlaying;
