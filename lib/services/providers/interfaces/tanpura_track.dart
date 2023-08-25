@@ -32,7 +32,7 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   ];
 
   TanpuraLibrary? library;
-
+  Scale? chosenScale;
   List<Media> get mediaFiles => _playlists.first.player.state.playlist.medias;
 
   @override
@@ -96,18 +96,14 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
     return futures;
   }
 
-  List<Future<void>> playDelays = [
-    Future.delayed(Duration(milliseconds: 0)),
-    Future.delayed(Duration(milliseconds: 0)),
-    Future.delayed(Duration(milliseconds: 0)),
-    Future.delayed(Duration(milliseconds: 0)),
-  ];
-  List<Timer> timers = [
-    Timer(Duration(milliseconds: 0), () {}),
-    Timer(Duration(milliseconds: 0), () {}),
-    Timer(Duration(milliseconds: 0), () {}),
-    Timer(Duration(milliseconds: 0), () {}),
-  ];
+  List<Scale> availableNotes() {
+    var notes = library?.files.map((e) => e.originalScale).toSet().toList();
+    notes?.sort((Scale a, Scale b) {
+      return a.toString().compareTo(b.toString());
+    });
+    return notes ?? [];
+  }
+
   Timer? timer;
   Future<void> playTracksWithDelay() async {
     int milliseconds = 60000 ~/ trackOptions.tempo!;
@@ -261,6 +257,18 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
     return false;
   }
 
+  Future<bool> updatePlaylist1Scale(Scale? scale) async {
+    if (scale != null) {
+      if (library != null) {
+        chosenScale = scale;
+        notifyListeners();
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
   @override
   Future<bool> updateFromGlobal(SoundBlendGlobalOptions globalOptions) async {
     if (library == null) return false;
@@ -275,8 +283,8 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
     var validNote = globalOptions.note;
     Scale playlist3Scale =
         Scale(note: validNote, octave: validNote == MusicNote.B ? 3 : 4);
-    Scale playlist1Scale = playlist3Scale.subtract(5);
-
+    Scale playlist1Scale = chosenScale ?? playlist3Scale.subtract(5);
+    print(playlist1Scale.toString());
     var validScales = [
       playlist1Scale,
       playlist3Scale,

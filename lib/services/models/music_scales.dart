@@ -32,6 +32,19 @@ class Scale extends Equatable {
     }
     throw Exception('Invalid scale');
   }
+
+  @override
+  String toString() {
+    String scale = note.name();
+    if (octave != null) {
+      scale += octave.toString();
+    }
+    if (isOpen) {
+      scale += 'open';
+    }
+    return scale;
+  }
+
   Scale subtract(int note) {
     int currentNoteIndex = MusicNote.values.indexOf(this.note);
     int currentOctave = octave ?? 3;

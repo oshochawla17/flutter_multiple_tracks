@@ -4,9 +4,11 @@ import 'package:flutter_multiple_tracks/services/providers/global_options_provid
 import 'package:flutter_multiple_tracks/services/providers/global_track_status.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/tabla_track.dart';
+import 'package:flutter_multiple_tracks/services/providers/interfaces/tanpura_track.dart';
 import 'package:flutter_multiple_tracks/utils/helper.dart';
 import 'package:flutter_multiple_tracks/widgets/taal_dropdown.dart';
 import 'package:flutter_multiple_tracks/widgets/tanpura_settings.dart';
+import 'package:flutter_multiple_tracks/widgets/tanupura_scale_dropdown.dart';
 import 'package:flutter_multiple_tracks/widgets/track_play_button.dart';
 import 'package:flutter_multiple_tracks/widgets/track_playlists_sheet.dart';
 import 'package:flutter_multiple_tracks/widgets/track_settings.dart';
@@ -67,6 +69,12 @@ class TrackRow extends StatelessWidget {
                               size: 35,
                             )),
                       )
+                    ],
+                  ),
+                if (provider is TanpuraTrack)
+                  const Row(
+                    children: [
+                      TanpuraScaleDropdown(),
                     ],
                   ),
                 Row(
