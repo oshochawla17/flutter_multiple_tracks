@@ -2,7 +2,7 @@ import 'package:flutter_multiple_tracks/services/models/instruments.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/metronome_file.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instruments_library.dart';
 
-class MetronomeLibrary extends InstrumentLibrary {
+class MetronomeLibrary implements InstrumentLibrary {
   MetronomeLibrary({
     required this.taalFiles,
   });

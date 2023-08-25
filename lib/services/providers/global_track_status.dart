@@ -5,6 +5,7 @@ import 'package:flutter_multiple_tracks/services/models/sound_blend_global_optio
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/metronome_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/tabla_track.dart';
+import 'package:flutter_multiple_tracks/services/providers/interfaces/tanpura_track.dart';
 
 class GlobalTrackStatus extends ChangeNotifier {
   GlobalTrackStatus({this.isPlaying = false});
@@ -14,7 +15,8 @@ class GlobalTrackStatus extends ChangeNotifier {
   List<InstrumentTrack> instruments = [
     TablaPakhawajTrack.tabla(),
     TablaPakhawajTrack.pakhawaj(),
-    MetronomeTrack()
+    TanpuraTrack(),
+    MetronomeTrack(),
   ];
   void load(Map<Instruments, InstrumentLibrary> libraries) {
     for (var instrument in instruments) {
@@ -80,9 +82,7 @@ class GlobalTrackStatus extends ChangeNotifier {
   void updateFromGlobal(SoundBlendGlobalOptions globalOptions) {
     try {
       for (var instrument in instruments) {
-        if (instrument.useGlobalScale) {
-          instrument.updateFromGlobal(globalOptions);
-        }
+        instrument.updateFromGlobal(globalOptions);
       }
     } catch (e) {
       print(e);
@@ -93,6 +93,18 @@ class GlobalTrackStatus extends ChangeNotifier {
     try {
       for (var instrument in instruments) {
         if (instrument is MetronomeTrack) {
+          instrument.updateFromGlobal(globalOptions);
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void updateScale(SoundBlendGlobalOptions globalOptions) {
+    try {
+      for (var instrument in instruments) {
+        if (instrument.useGlobalScale) {
           instrument.updateFromGlobal(globalOptions);
         }
       }

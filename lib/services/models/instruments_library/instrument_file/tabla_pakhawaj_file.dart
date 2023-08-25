@@ -66,7 +66,6 @@ class TablaPakhawajFile extends InstrumentFile {
   @override
   final String path;
 
-  @override
   final Scale originalScale;
   @override
   final bool isSelected;
@@ -79,7 +78,6 @@ class TablaPakhawajFile extends InstrumentFile {
 
   final List<Scale> scaleRange;
 
-  @override
   InstrumentFile copyWith({
     Instruments? instrument,
     String? name,

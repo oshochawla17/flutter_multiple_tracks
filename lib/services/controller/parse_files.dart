@@ -5,9 +5,11 @@ import 'package:flutter_multiple_tracks/services/models/instruments.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/instrument_file.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/metronome_file.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/tabla_pakhawaj_file.dart';
+import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/tanpura_file.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instruments_library.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/metronome_library.dart.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/tabla_pakhawaj_library.dart';
+import 'package:flutter_multiple_tracks/services/models/instruments_library/tanpura_library.dart';
 import 'package:flutter_multiple_tracks/services/models/music_scales.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -97,6 +99,29 @@ class FileParser {
     }
   }
 
+  static InstrumentFile? parseTanpuraFiles(String file) {
+    try {
+      var splits = file.split('Tanpura/');
+      if (splits.length > 1) {
+        // 04-D3.wav
+        var fileName = splits[1];
+        var tanpuraProps = fileName.split('-');
+        if (tanpuraProps.length == 2) {
+          var scale = tanpuraProps[1].split('.')[0];
+          return TanpuraFile(
+              name: fileName,
+              path: file,
+              originalScale: Scale.fromString(scale),
+              isSelected: true);
+        }
+      }
+      return null;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   static Future<Map<Instruments, InstrumentLibrary>> traverseDirectory(
       String rootPath) async {
     var uri = Uri.parse(rootPath);
@@ -112,6 +137,8 @@ class FileParser {
     Map<String, List<TablaPakhawajFile>> tablaFiles = {};
     Map<String, List<TablaPakhawajFile>> pakhawajFiles = {};
     Map<String, List<MetronomeFile>> metronomeFiles = {};
+
+    List<TanpuraFile> tanpuraFiles = [];
 
     for (String file in totalFiles) {
       if (file.contains('Tabla') || file.contains('Pakhawaj')) {
@@ -141,6 +168,12 @@ class FileParser {
           }
           pakhawajFiles[subtype]!.add(parsedFile);
         }
+      } else if (file.contains('Tanpura')) {
+        var parsedFile = parseTanpuraFiles(file);
+        if (parsedFile == null) {
+          continue;
+        }
+        tanpuraFiles.add(parsedFile as TanpuraFile);
       }
     }
 
@@ -152,10 +185,12 @@ class FileParser {
     );
     MetronomeLibrary metronomeLibrary =
         MetronomeLibrary(taalFiles: metronomeFiles);
+    TanpuraLibrary tanpuraLibrary = TanpuraLibrary(files: tanpuraFiles);
     return {
       Instruments.tabla: tablaLibrary,
       Instruments.pakhawaj: pakhawajLibrary,
       Instruments.metronome: metronomeLibrary,
+      Instruments.tanpura: tanpuraLibrary,
     };
   }
 }

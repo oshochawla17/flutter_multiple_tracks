@@ -94,8 +94,6 @@ class _TrackPlaylistComponentState extends State<TrackPlaylistComponent> {
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
                     itemBuilder: (BuildContext context, int index) {
-                      var tracks = widget.playlist.player.stream.tracks;
-
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [

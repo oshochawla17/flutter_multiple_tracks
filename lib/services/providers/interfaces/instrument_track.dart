@@ -5,7 +5,6 @@ import 'package:flutter_multiple_tracks/services/models/instruments_library/inst
 import 'package:flutter_multiple_tracks/services/models/sound_blend_global_options.dart';
 import 'package:flutter_multiple_tracks/services/models/track_options.dart';
 import 'package:flutter_multiple_tracks/services/providers/playlist_provider.dart';
-import 'package:media_kit/media_kit.dart';
 
 abstract class InstrumentTrack with ChangeNotifier {
   Instruments get instrument;
@@ -24,8 +23,7 @@ abstract class InstrumentTrack with ChangeNotifier {
   bool updateFromLocal(TrackOptions localOptions);
   void load(InstrumentLibrary library);
   Future<bool> resetPlaylist();
-  // Future<bool> setTempo(int bpm, MusicNote note);
   Future<bool> setPitch(int cents);
-  PlayerStream get playerStream;
+
   InstrumentFile? get currentPlaying;
 }

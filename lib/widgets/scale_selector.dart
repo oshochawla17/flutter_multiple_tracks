@@ -22,7 +22,7 @@ class ScaleSelector extends StatelessWidget {
                   note: newNote,
                 );
                 provider.updateOptions(newOptions);
-                context.read<GlobalTrackStatus>().updateFromGlobal(newOptions);
+                context.read<GlobalTrackStatus>().updateScale(newOptions);
               },
               child: const Center(child: Icon(Icons.remove))),
           const SizedBox(width: 10),
@@ -52,7 +52,7 @@ class ScaleSelector extends StatelessWidget {
                   note: newNote,
                 );
                 provider.updateOptions(newOptions);
-                context.read<GlobalTrackStatus>().updateFromGlobal(newOptions);
+                context.read<GlobalTrackStatus>().updateScale(newOptions);
               },
               child: const Center(child: Icon(Icons.add))),
         ],

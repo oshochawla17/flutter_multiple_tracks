@@ -52,7 +52,6 @@ class MasterRow extends StatelessWidget {
                 newOptions,
               );
               context.read<GlobalTrackStatus>().setTempo(newOptions);
-              // context.read<GlobalTrackStatus>().setPitch(newOptions);
             },
             child: const Icon(Icons.replay_outlined),
           ),
@@ -110,10 +109,9 @@ class MasterRow extends StatelessWidget {
                                       .read<GlobalOptionsProvider>()
                                       .options
                                       .copyWith(pitch: value.toInt()));
-                            },
-                            onChangeEnd: (double value) {
                               onPitchChange(value.toInt());
                             },
+                            onChangeEnd: (double value) {},
                           ),
                         )
                       ],
@@ -130,7 +128,6 @@ class MasterRow extends StatelessWidget {
                                 min: TrackOptions.minTempo,
                                 max: TrackOptions.maxTempo,
                                 formatText: (String text) {
-                                  // if it's an integer use, that otherwise truncate to 2 digits
                                   var percentage =
                                       double.tryParse(text)!.toStringAsFixed(2);
                                   if (percentage.endsWith('.00')) {

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/metronome_file.dart';
-import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/tabla_pakhawaj_file.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instruments_library.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/metronome_library.dart.dart';
-import 'package:flutter_multiple_tracks/services/models/instruments_library/tabla_pakhawaj_library.dart';
-import 'package:flutter_multiple_tracks/services/models/music_scales.dart';
 import 'package:flutter_multiple_tracks/services/models/sound_blend_global_options.dart';
 import 'package:flutter_multiple_tracks/services/models/track_options.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
@@ -66,10 +63,10 @@ class MetronomeTrack with ChangeNotifier implements InstrumentTrack {
     return futures;
   }
 
-  @override
-  PlayerStream get playerStream {
-    return _playlist.player.stream;
-  }
+  // @override
+  // PlayerStream get playerStream {
+  //   return _playlist.player.stream;
+  // }
 
   @override
   Future<bool> stop() async {
@@ -148,7 +145,7 @@ class MetronomeTrack with ChangeNotifier implements InstrumentTrack {
   InstrumentLibrary? get instrumentLibrary => library;
 
   @override
-  bool get useGlobalScale => true;
+  bool get useGlobalScale => false;
 
   Future<bool> updateFromGlobalOptionsAndFiles({
     required SoundBlendGlobalOptions globalOptions,

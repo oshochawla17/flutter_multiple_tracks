@@ -77,10 +77,10 @@ class TablaPakhawajTrack with ChangeNotifier implements InstrumentTrack {
     return futures;
   }
 
-  @override
-  PlayerStream get playerStream {
-    return _playlist.player.stream;
-  }
+  // @override
+  // PlayerStream get playerStream {
+  //   return _playlist.player.stream;
+  // }
 
   @override
   Future<bool> stop() async {

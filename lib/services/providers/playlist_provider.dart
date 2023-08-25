@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/instrument_file.dart';
-import 'package:flutter_multiple_tracks/services/models/track_options.dart';
-import 'package:flutter_multiple_tracks/utils/helper.dart';
 import 'package:media_kit/media_kit.dart';
 
 // class TrackPlaylistsStatus extends ChangeNotifier {
@@ -116,10 +113,10 @@ import 'package:media_kit/media_kit.dart';
 // }
 
 class TrackPlaylist {
-  TrackPlaylist() {
+  TrackPlaylist({this.useLoop = true}) {
     load();
   }
-
+  final bool useLoop;
   // ConcatenatingAudioSource playlist = ConcatenatingAudioSource(
   //   useLazyPreparation: true,
   //   shuffleOrder: DefaultShuffleOrder(),
@@ -135,9 +132,8 @@ class TrackPlaylist {
   List<InstrumentFile> files = [];
 
   void load() async {
-    await player.setPlaylistMode(
-      PlaylistMode.loop,
-    );
+    await player
+        .setPlaylistMode(useLoop ? PlaylistMode.loop : PlaylistMode.single);
   }
 
   void setVolume(double volume) {

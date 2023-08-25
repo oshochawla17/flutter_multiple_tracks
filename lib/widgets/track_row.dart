@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_multiple_tracks/services/models/instruments.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_track_status.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/tabla_track.dart';
 import 'package:flutter_multiple_tracks/utils/helper.dart';
 import 'package:flutter_multiple_tracks/widgets/taal_dropdown.dart';
+import 'package:flutter_multiple_tracks/widgets/tanpura_settings.dart';
 import 'package:flutter_multiple_tracks/widgets/track_play_button.dart';
 import 'package:flutter_multiple_tracks/widgets/track_playlists_sheet.dart';
 import 'package:flutter_multiple_tracks/widgets/track_settings.dart';
@@ -111,7 +113,6 @@ class TrackRow extends StatelessWidget {
                                     ChangeNotifierProvider<
                                         InstrumentTrack>.value(
                                       value: trackOptionsProvider,
-                                      child: const TrackSettings(),
                                     ),
                                     ChangeNotifierProvider<
                                         GlobalOptionsProvider>.value(
@@ -119,13 +120,13 @@ class TrackRow extends StatelessWidget {
                                           context.read<GlobalOptionsProvider>(),
                                     ),
                                   ],
-                                  child:
-                                      // create dialog with close   button
-                                      // close on outside click
-
-                                      AlertDialog(
-                                    title: const Text('Track Settings'),
-                                    content: const TrackSettings(),
+                                  child: AlertDialog(
+                                    title: Text(
+                                        '${provider.instrument.name} Settings'),
+                                    content: provider.instrument ==
+                                            Instruments.tanpura
+                                        ? const TanpuraSettings()
+                                        : const TrackSettings(),
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () =>
