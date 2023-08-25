@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_multiple_tracks/services/providers/playlist_provider.dart';
+import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/widgets/track_playlist.dart';
 import 'package:provider/provider.dart';
 
@@ -10,8 +10,7 @@ class TrackPlaylistsSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
-      return Consumer<TrackPlaylistsStatus>(
-          builder: (context, provider, child) {
+      return Consumer<InstrumentTrack>(builder: (context, provider, child) {
         return Container(
           height: 400,
           padding: const EdgeInsets.all(12),
@@ -27,7 +26,7 @@ class TrackPlaylistsSheet extends StatelessWidget {
               const SizedBox(height: 15),
               Expanded(
                 child: ListView.builder(
-                  itemCount: 4,
+                  itemCount: provider.playlists.length,
                   physics: const ClampingScrollPhysics(),
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,

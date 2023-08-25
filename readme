@@ -1,0 +1,55 @@
+Note on - Behavious of tracks
+
+Track - Tabla and Pakhawaj
+(These tracks are exactly same in terms of the funcationality and behaviour)
+
+2. User will select taal from list (Taal is the list of subfolder in tabla folder) we have to load eligible files from the subfolder selected by user.
+3. eligible files are files from user selected folder having global pitch and global tempo matching in scale and tempo range respectively.
+4. In Tabla and Pakhawaj we have only 1 playlist. we will load all eligible files to the play list. eligible file selection on the basis of scale range and tempo range as explained above.
+5. Pitch applicability : Global only (apply pitch value to playlist calculated as difference between original scale and global scale)
+6. Tempo applicability : Global only (apply tempo value to playlist calculated as % between original tempo and global tempo)
+7. User can select or deselect files within selected eligible files.
+8. User can set shuffle on/off
+9. user can mute the track
+10. user can control the volume
+11. Playlist plays in loop continuous
+
+
+Track - Tanpura 1 & 2
+(These tracks are exactly same in terms of functionality and behaviour)
+
+1. We have 4 playlist here. Each playlist will have 1 file. 
+2. Pitch applicability - None - Pitch value will be 0 always here (meaning original audio scale will be played)
+3. Tempo applicability - None - Tempo value will be 100% always here (meaning original tempo will be played)
+4. Playlist 4:  Load 3rd ocatave note same as global pitch selected by user (except for B where load 2nd ocatve B2)
+5. Playlist 3:  Load 4th ocatave note same as global pitch selected by user (except for B where load 3rd octave B3)
+6. Playlist 2:  Load 4th ocatave note same as global pitch selected by user (except for B where load 3rd octave B3)
+7. Playlist 1 : Load (playlist3 noten number minus 5) note
+8. Playlist 1 and 2 note can be manually changed by the user from entire list to any note (from B2 - B4).
+9. user can mute the track
+10. user can control the volume
+11. User will input local BPM here which is only to be used to calculate time gap between play of 2 playlist. Please note here, that this is not going to effect playing of the note itself. Local BPM Value validation 30BPM to 150BPM.
+11. we have to put timegap equal to 60000/LocalBPM miliseconds between play of playlist 2&1, 3&2 and 4&3. We have to put timegap equal to 60000/LocalBPM*2 miliseconds between 4&1. This sequence keeps on playing in loops.
+12. playlist 1-4 plays in loop continuous as per above working method.
+
+
+Track - Swarmandal
+
+1. User selects raag (raag here is subfolder list in swarmandal folder) we have to load eigible file from the user selected subfolder
+2. eligible files are files from user selected folder having global pitch matching in scale range. (no tempo range applicable to swarmandal)
+3. Pitch applicability : Global pitch (apply pitch value to playlist calculated as difference between original scale and global scale)
+4. Tempo applicability : None (meaning tempo value will be 100% which means it will alwyas play audio in original speed)
+5. Here we have only 1 playlist. here we have to load one eligible file at a time. Play it and then load next file replacing the first. the Next time the playlist will play will be after user defined timegap.
+6. User will define timegap in 2 options. Option 1 fixed time gap where user will specify fixed timegap in seconds that should be placed in between playing 2 files. Option 2 Random time gap where user will define min timegap and maximum timegap and timegap will be any random number that will be generated everytime on file play is completed.
+8. User can set shuffle on/off. Default off. If off then files loaded to plyalist will be in sequence. if on then files loaded to playlist will be any random from eligible files.
+9. user can mute the track
+10. user can control the volume
+
+Track - metronome
+(This track is dependent on tabla track subfolder)
+
+1. Here we will have 1 playlist which will load only 1 file and play in loop. 
+2. Eligible file will be metronome file in tabla folder for gobal tempo falling in tempo range of file.
+3. file plays in loop.
+4. user can mute the track
+5. user can control the volume

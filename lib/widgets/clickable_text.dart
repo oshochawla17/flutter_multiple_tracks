@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'dart:math' as math;
 
 class ClickableText extends StatefulWidget {
-  final num number;
-  final num min, max;
+  final int number;
+  final int min, max;
   final Function(String) onValueChanged;
   final String Function(String) formatText;
   const ClickableText(

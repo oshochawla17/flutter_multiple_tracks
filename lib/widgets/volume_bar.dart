@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_multiple_tracks/services/providers/playlist_provider.dart';
+import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:provider/provider.dart';
 
 class VolumeBar extends StatelessWidget {
@@ -7,7 +7,7 @@ class VolumeBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TrackPlaylistsStatus>(builder: (context, provider, child) {
+    return Consumer<InstrumentTrack>(builder: (context, provider, child) {
       return SliderTheme(
         data: SliderThemeData(
           overlayShape: SliderComponentShape.noOverlay,
@@ -16,35 +16,35 @@ class VolumeBar extends StatelessWidget {
           children: [
             InkWell(
               child: Icon(
-                  provider.options.isMute
+                  provider.trackOptions.isMute
                       ? Icons.volume_off
                       : Icons.volume_down,
-                  color: provider.options.isMute
+                  color: provider.trackOptions.isMute
                       ? Colors.grey.withOpacity(0.5)
                       : Colors.grey),
               onTap: () {
-                provider.options.isMute
-                    ? context.read<TrackPlaylistsStatus>().unmute()
-                    : context.read<TrackPlaylistsStatus>().mute();
+                provider.trackOptions.isMute
+                    ? context.read<InstrumentTrack>().unmute()
+                    : context.read<InstrumentTrack>().mute();
               },
             ),
             Slider(
-              value: provider.options.volume,
+              value: provider.trackOptions.volume,
               max: 1.00,
               min: 0.00,
               onChanged: (double value) {
-                context.read<TrackPlaylistsStatus>().setVolume(value);
+                context.read<InstrumentTrack>().setVolume(value);
               },
             ),
             InkWell(
               child: Icon(
                 Icons.volume_up,
-                color: provider.options.volume == 1
+                color: provider.trackOptions.volume == 1
                     ? Colors.blue
                     : Colors.grey.withOpacity(0.7),
               ),
               onTap: () {
-                context.read<TrackPlaylistsStatus>().setVolume(1);
+                context.read<InstrumentTrack>().setVolume(1);
               },
             ),
           ],

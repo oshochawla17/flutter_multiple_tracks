@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_track_status.dart';
-import 'package:flutter_multiple_tracks/services/providers/playlist_provider.dart';
+import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
+import 'package:flutter_multiple_tracks/services/providers/interfaces/tabla_track.dart';
+import 'package:flutter_multiple_tracks/utils/helper.dart';
+import 'package:flutter_multiple_tracks/widgets/taal_dropdown.dart';
 import 'package:flutter_multiple_tracks/widgets/track_play_button.dart';
 import 'package:flutter_multiple_tracks/widgets/track_playlists_sheet.dart';
 import 'package:flutter_multiple_tracks/widgets/track_settings.dart';
@@ -13,39 +16,67 @@ class TrackRow extends StatelessWidget {
   final int index;
   @override
   Widget build(BuildContext context) {
-    onStop(TrackPlaylistsStatus provider) async {
+    onStop(InstrumentTrack provider) async {
       await provider.stop();
 
       var globalTrackStatus =
           // ignore: use_build_context_synchronously
           context.read<GlobalTrackStatus>();
-      for (TrackPlaylistsStatus status in globalTrackStatus.playlistsStatus) {
-        if (status.isPlaying) {
+      for (InstrumentTrack instrument in globalTrackStatus.instruments) {
+        if (instrument.isPlaying) {
           return;
         }
       }
       globalTrackStatus.updateIsPlaying(false);
     }
 
-    return Consumer<TrackPlaylistsStatus>(builder: (context, provider, child) {
+    return Consumer<InstrumentTrack>(builder: (context, provider, child) {
+      if (provider is TablaPakhawajTrack) {
+        print('Track row rebuild ${provider.instrument.name}');
+
+        print(
+            'Current pitch semitones:  ${AudioHelper.pitchFactorToSemitones(provider.playlists.first.player.state.pitch)}');
+        print('Current tempo:  ${provider.playlists.first.player.state.rate}');
+        print(
+            'Current media length:  ${provider.playlists.first.player.state.playlist.medias.length}');
+      }
       return Builder(builder: (context) {
         return Card(
           elevation: 2,
-          color: provider.options.isTrackOn ? Colors.white : Colors.grey[300],
+          color:
+              provider.trackOptions.isTrackOn ? Colors.white : Colors.grey[300],
           child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: Column(
               children: [
+                // create a dropdown
+                if (provider is TablaPakhawajTrack)
+                  Row(
+                    children: [
+                      const TaalDropdown(),
+                      Opacity(
+                        opacity: provider.isShuffle ? 1 : 0.5,
+                        child: InkWell(
+                            onTap: () {
+                              provider.taggleShuffle();
+                            },
+                            child: const Icon(
+                              Icons.shuffle,
+                              size: 35,
+                            )),
+                      )
+                    ],
+                  ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
                         Switch(
-                            value: provider.options.isTrackOn,
+                            value: provider.trackOptions.isTrackOn,
                             onChanged: (val) {
-                              provider.updateOptions(
-                                  provider.options.copyWith(isTrackOn: val));
+                              provider.updateFromLocal(provider.trackOptions
+                                  .copyWith(isTrackOn: val));
                               if (!val) {
                                 onStop(provider);
                               }
@@ -53,7 +84,7 @@ class TrackRow extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      'Track ${index + 1}',
+                      provider.instrument.name,
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -74,11 +105,11 @@ class TrackRow extends StatelessWidget {
                               barrierLabel: "",
                               builder: (BuildContext builderContext) {
                                 final trackOptionsProvider =
-                                    context.read<TrackPlaylistsStatus>();
+                                    context.read<InstrumentTrack>();
                                 return MultiProvider(
                                   providers: [
                                     ChangeNotifierProvider<
-                                        TrackPlaylistsStatus>.value(
+                                        InstrumentTrack>.value(
                                       value: trackOptionsProvider,
                                       child: const TrackSettings(),
                                     ),
@@ -124,10 +155,10 @@ class TrackRow extends StatelessWidget {
                           isScrollControlled: true,
                           builder: (BuildContext builderContext) {
                             final trackOptionsProvider =
-                                context.read<TrackPlaylistsStatus>();
+                                context.read<InstrumentTrack>();
                             return SingleChildScrollView(
-                              child: ChangeNotifierProvider<
-                                  TrackPlaylistsStatus>.value(
+                              child:
+                                  ChangeNotifierProvider<InstrumentTrack>.value(
                                 value: trackOptionsProvider,
                                 child: const TrackPlaylistsSheet(),
                               ),
@@ -138,9 +169,9 @@ class TrackRow extends StatelessWidget {
                     ),
                     const VolumeBar(),
                     TrackPlayButton(
-                        isTrackOn: provider.options.isTrackOn,
+                        isTrackOn: provider.trackOptions.isTrackOn,
                         onPlay: () {
-                          if (!provider.options.isTrackOn) {
+                          if (!provider.trackOptions.isTrackOn) {
                             return;
                           }
                           var futures = provider.play();
@@ -157,6 +188,8 @@ class TrackRow extends StatelessWidget {
                         onStop: () => onStop(provider)),
                   ],
                 ),
+                Text(
+                    'Currently playing: ${provider.currentPlaying?.name ?? ''}'),
               ],
             ),
           ),

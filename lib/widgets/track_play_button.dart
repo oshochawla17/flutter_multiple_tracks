@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_multiple_tracks/services/providers/playlist_provider.dart';
+import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:provider/provider.dart';
 
 class TrackPlayButton extends StatelessWidget {
@@ -14,7 +14,7 @@ class TrackPlayButton extends StatelessWidget {
   final bool isTrackOn;
   @override
   Widget build(BuildContext context) {
-    return Consumer<TrackPlaylistsStatus>(
+    return Consumer<InstrumentTrack>(
       builder: (context, playlistProvider, child) {
         return ElevatedButton(
           onPressed: !isTrackOn

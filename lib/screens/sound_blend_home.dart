@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_multiple_tracks/services/bloc/master_bloc/master.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_track_status.dart';
+import 'package:flutter_multiple_tracks/services/providers/library_provider.dart';
+import 'package:flutter_multiple_tracks/widgets/audio_directory.dart';
 import 'package:flutter_multiple_tracks/widgets/master_row.dart';
 import 'package:flutter_multiple_tracks/widgets/track_row.dart';
 import 'package:provider/provider.dart';
@@ -26,9 +28,13 @@ class SoundBlendHome extends StatelessWidget {
           ChangeNotifierProvider<GlobalTrackStatus>(
             create: (context) => GlobalTrackStatus(),
           ),
+          ChangeNotifierProvider<LibraryProvider>(
+            create: (context) => LibraryProvider(),
+          ),
         ],
         child: Column(
           children: [
+            const AudioDirectoryLoader(),
             const Text(
               'Sound Blend',
               style: TextStyle(
@@ -61,19 +67,20 @@ class SoundBlendHome extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: ListView.builder(
-                  itemCount: 6,
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  physics: const ClampingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return ChangeNotifierProvider.value(
-                        value: context
-                            .read<GlobalTrackStatus>()
-                            .playlistsStatus[index],
-                        child: TrackRow(index: index));
-                  },
-                ),
+                child: Builder(builder: (context) {
+                  var instrumentsProvider = context.read<GlobalTrackStatus>();
+                  return ListView.builder(
+                    itemCount: instrumentsProvider.instruments.length,
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    physics: const ClampingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return ChangeNotifierProvider.value(
+                          value: instrumentsProvider.instruments[index],
+                          child: TrackRow(index: index));
+                    },
+                  );
+                }),
               ),
             ),
           ],

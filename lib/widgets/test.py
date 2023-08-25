@@ -1,147 +1,214 @@
+# Implementing "Min Heap"
+class MinHeap:
+    def __init__(self, heapSize):
+        # Create a complete binary tree using an array
+        # Then use the binary tree to construct a Heap
+        self.heapSize = heapSize
+        # the number of elements is needed when instantiating an array
+        # heapSize records the size of the array
+        self.minheap = [0] * (heapSize + 1)
+        # realSize records the number of elements in the Heap
+        self.realSize = 0
 
-import bisect
-from collections import Counter
-from typing import Optional
+    # Function to add an element
+    def add(self, element):
+        self.realSize += 1
+        # If the number of elements in the Heap exceeds the preset heapSize
+        # print "Added too many elements" and return
+        if self.realSize > self.heapSize:
+            print("Added too many elements!")
+            self.realSize -= 1
+            return
+        # Add the element into the array
+        self.minheap[self.realSize] = element
+        # Index of the newly added element
+        index = self.realSize
+        # Parent node of the newly added element
+        # Note if we use an array to represent the complete binary tree
+        # and store the root node at index 1
+        # index of the parent node of any node is [index of the node / 2]
+        # index of the left child node is [index of the node * 2]
+        # index of the right child node is [index of the node * 2 + 1]
+        parent = index // 2
+        # If the newly added element is smaller than its parent node,
+        # its value will be exchanged with that of the parent node 
+        while (self.minheap[index] < self.minheap[parent] and index > 1):
+            self.minheap[parent], self.minheap[index] = self.minheap[index], self.minheap[parent]
+            index = parent
+            parent = index // 2
+    
+    # Get the top element of the Heap
+    def peek(self):
+        return self.minheap[1]
+    
+    # Delete the top element of the Heap
+    def pop(self):
+        # If the number of elements in the current Heap is 0,
+        # print "Don't have any elements" and return a default value
+        if self.realSize < 1:
+            print("Don't have any element!")
+            return sys.maxsize
+        else:
+            # When there are still elements in the Heap
+            # self.realSize >= 1
+            removeElement = self.minheap[1]
+            # Put the last element in the Heap to the top of Heap
+            self.minheap[1] = self.minheap[self.realSize]
+            self.realSize -= 1
+            index = 1
+            # When the deleted element is not a leaf node
+            while (index <= self.realSize // 2):
+                # the left child of the deleted element
+                left = index * 2
+                # the right child of the deleted element
+                right = (index * 2) + 1
+                # If the deleted element is larger than the left or right child
+                # its value needs to be exchanged with the smaller value
+                # of the left and right child
+                if (self.minheap[index] > self.minheap[left] or self.minheap[index] > self.minheap[right]):
+                    if self.minheap[left] < self.minheap[right]:
+                        self.minheap[left], self.minheap[index] = self.minheap[index], self.minheap[left]
+                        index = left
+                    else:
+                        self.minheap[right], self.minheap[index] = self.minheap[index], self.minheap[right]
+                        index = right
+                else:
+                    break
+            return removeElement
+    
+    # return the number of elements in the Heap
+    def size(self):
+        return self.realSize
+    
+    def __str__(self):
+        return str(self.minheap[1 : self.realSize + 1])
+        
 
+    	
+class MaxHeap:
+    def __init__(self, heapSize):
+        # Create a complete binary tree using an array
+        # Then use the binary tree to construct a Heap
+        self.heapSize = heapSize
+        # the number of elements is needed when instantiating an array
+        # heapSize records the size of the array
+        self.maxheap = [0] * (heapSize + 1)
+        # realSize records the number of elements in the Heap
+        self.realSize = 0
 
-def maxVowels( s: str, k: int) -> int:
-    left, right = 0, k - 1
-    maxVowel = 0
-    currentVowels = -1
-    isLeftVowel = False
-    vowels = ['a', 'e', 'i', 'o', 'u']
-    while (right < len(s)):
-        # check if left, and right are vowels
-        # add it to current vowels
-        if (currentVowels == -1):
-            # count total vowels
-            count = 0
-            # subsctring from left
-            for char in s[left:right + 1]:
-                if (char in vowels):
-                    count += 1
-            currentVowels = count
-            isLeftVowel = s[left] in vowels
-        else :
-            isRightVowel = s[right] in vowels
-            if (isLeftVowel):
-                currentVowels -= 1
-            if (isRightVowel):
-                currentVowels += 1
-            isLeftVowel = s[left] in vowels
-            print('..',currentVowels)
-        maxVowel = max(maxVowel, currentVowels)
-        print(maxVowel)
-        right += 1
-        left += 1
-    print(maxVowel)
-    return maxVowel
+    # Function to add an element
+    def add(self, element):
+        self.realSize += 1
+        # If the number of elements in the Heap exceeds the preset heapSize
+        # print "Added too many elements" and return
+        if self.realSize > self.heapSize:
+            print("Added too many elements!")
+            self.realSize -= 1
+            return
+        # Add the element into the array
+        print('real size', self.realSize, self.maxheap)
+        self.maxheap[self.realSize] = element
+        # Index of the newly added element
+        index = self.realSize
+        # Parent node of the newly added element
+        # Note if we use an array to represent the complete binary tree
+        # and store the root node at index 1
+        # index of the parent node of any node is [index of the node / 2]
+        # index of the left child node is [index of the node * 2]
+        # index of the right child node is [index of the node * 2 + 1]
+        parent = index // 2
+        
+        # If the newly added element is larger than its parent node,
+        # its value will be exchanged with that of the parent node 
+        while (self.maxheap[index] > self.maxheap[parent] and index > 1):
+            self.maxheap[parent], self.maxheap[index] = self.maxheap[index], self.maxheap[parent]
+            index = parent
+            parent = index // 2
             
+    # Get the top element of the Heap
+    def peek(self):
+        return self.maxheap[1]
+    
+    # Delete the top element of the Heap
+    def pop(self):
+        # If the number of elements in the current Heap is 0,
+        # print "Don't have any elements" and return a default value
+        if self.realSize < 1:
+            print("Don't have any element!")
+            return -sys.maxsize
+        else:
+            # When there are still elements in the Heap
+            # self.realSize >= 1
+            removeElement = self.maxheap[1]
+            # Put the last element in the Heap to the top of Heap
+            self.maxheap[1] = self.maxheap[self.realSize]
+            self.realSize -= 1
+            index = 1
+            # When the deleted element is not a leaf node
+            while (index <= self.realSize // 2):
+                # the left child of the deleted element
+                left = index * 2
+                # the right child of the deleted element
+                right = (index * 2) + 1
+                # If the deleted element is smaller than the left or right child
+                # its value needs to be exchanged with the larger value
+                # of the left and right child
+                if (self.maxheap[index] < self.maxheap[left] or self.maxheap[index] < self.maxheap[right]):
+                    if self.maxheap[left] > self.maxheap[right]:
+                        self.maxheap[left], self.maxheap[index] = self.maxheap[index], self.maxheap[left]
+                        index = left
+                    else:
+                        self.maxheap[right], self.maxheap[index] = self.maxheap[index], self.maxheap[right]
+                        index = right
+                else:
+                    break
+            return removeElement
+    
+    # return the number of elements in the Heap
+    def size(self):
+        return self.realSize
+    
+    def __str__(self):
+        return str(self.maxheap[1 : self.realSize + 1])
+        
 
-
-
-
-#list comprehension:
-old_list = [1, 2, 3, 4]
-# old_list = list(map(lambda x: x * x, old_list))
-old_list = [x * x for x in old_list]
-print(old_list)
-
-# unpacking:
-arr = [1]*4
-arr2 = [2]*4
-
-arr3 = [*arr, *arr2]
-
-for i,j in zip(arr2, arr3):
-    print(i,j)
-print(arr3)
-
-
-x = {'a': 1, 'g': 2}
-x = {**x, 'c' : 9}
-print(x)
-
-# 2d array:
-arr4 = [[0] * 4 for i in range(5)]
-print(arr4)
-
-st = 'sssss'
-#st[3] = 'f'
-# print(st)
-
-a= [1, 2, 3]
-for i, item in reversed(list(enumerate(a[0: len(a) - 1]))):
-    print(i, item)
-# print(list(reversed(a)))
-# print(a)
-def rotate( nums: dict, k: int) -> None:
-    print(nums)
-    return nums
-rotate([1, 2, 4], 4)
-
-
-
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
-
-
-def fun():
-    xx = 4
-    def x():
-        nonlocal xx;
-        xx = 5
-    x()
-    print(xx)
-
-l = [1,2,3]
-# reverse list
-l = l[0:-1]
-print(l)
-maze = [["+","+",".","+"],[".",".",".","+"],["+","+","+","."]]
-rows = len(maze)
-columns = len(maze[0])
-visited = [[False] * columns for i in range(rows)]
-print(visited)
-a = ['osho','a','ppppp']
-a.sort(key= lambda x: len(x))
-print(a)
-print( 7//2)
-print(bisect.bisect_left([1,1,2,4,5], 3))
-
-empty_board = [["."] * 4 for _ in range(4)]
-print(empty_board)
-
-class Person:
-    __att = '1111'
-    def __init__(self):
-        self.name = 'osho'
-        #  private variable
-        self._age = 10
-        self._cols = [1]
-    def method(self):
-        print(self.name)
-        self._age += 4
-        print(self._age)
-        print(self._cols)
-class Student(Person):
-    def __init__(self):
-        super().__init__()
-        self.name = 'osho2'
-    def method(self):
-        print(self.name)
-a = Person()
-a.name = 'osho2'
-a._cols.append(2)
-a.method()
-a.method()
-b = Person()
-
-obj = {'name': 'akshay'}
-def fun(obj):
-    obj = {'name': 'osho'}
-fun(obj)
-print(obj)
+if __name__ == "__main__":
+    	# Test cases
+        maxHeap = MaxHeap(5)
+        maxHeap.add(1)
+        maxHeap.add(2)
+        maxHeap.add(3)
+        # [3,1,2]
+        print(maxHeap)
+        # 3
+        print(maxHeap.peek())
+        # 3
+        print(maxHeap.pop())
+        # 2
+        print(maxHeap.pop())
+        # 1
+        print(maxHeap.pop())
+        maxHeap.add(4)
+        maxHeap.add(5)
+        # [5,4]
+        print(maxHeap)
+        # Test cases
+        minHeap = MinHeap(5)
+        minHeap.add(3)
+        minHeap.add(1)
+        minHeap.add(2)
+        # [1,3,2]
+        print(minHeap)
+        # 1
+        print(minHeap.peek())
+        # 1
+        print(minHeap.pop())
+        # 2
+        print(minHeap.pop())
+        # 3
+        print(minHeap.pop())
+        minHeap.add(4)
+        minHeap.add(5)
+        # [4,5]
+        print(minHeap)
+        # Implementing "Max Heap"
