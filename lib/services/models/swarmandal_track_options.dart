@@ -7,7 +7,7 @@ class SwarmandalTrackOptions extends TrackOptions {
     this.gaps = 3,
     super.volume = 1.0,
     super.isMute = false,
-    super.isTrackOn = true,
+    super.isTrackOn = false,
     super.useGlobalPitch = true,
     super.useGlobalTempo = false,
     super.tempo = TrackOptions.defaultPitch,

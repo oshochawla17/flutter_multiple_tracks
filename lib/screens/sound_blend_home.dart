@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_multiple_tracks/services/models/track_options.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_multiple_tracks/services/bloc/master_bloc/master.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
@@ -45,12 +46,28 @@ class SoundBlendHome extends StatelessWidget {
             shrinkWrap: true,
             children: [
               // const AudioDirectoryLoader(),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: Row(
                   children: [
-                    Expanded(child: ScaleTuner()),
-                    Expanded(child: TempoTuner()),
+                    const Expanded(child: ScaleTuner()),
+                    Consumer<GlobalOptionsProvider>(
+                        builder: (context, provider, child) {
+                      return Expanded(
+                        child: TempoTuner(
+                          onTempoChange: (int newVal) {
+                            if (newVal > TrackOptions.maxTempo) {
+                              newVal = TrackOptions.maxTempo;
+                            } else if (newVal < TrackOptions.minTempo) {
+                              newVal = TrackOptions.minTempo;
+                            }
+
+                            provider.updateOptions(
+                                provider.options.copyWith(tempo: newVal));
+                          },
+                        ),
+                      );
+                    }),
                   ],
                 ),
               ),

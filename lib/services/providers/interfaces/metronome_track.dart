@@ -13,7 +13,7 @@ class MetronomeTrack with ChangeNotifier implements InstrumentTrack {
     this.trackOptions = const TrackOptions(
       volume: 1.0,
       isMute: false,
-      isTrackOn: true,
+      isTrackOn: false,
       useGlobalTempo: true,
       useGlobalPitch: false,
     ),
@@ -47,12 +47,14 @@ class MetronomeTrack with ChangeNotifier implements InstrumentTrack {
   // List<Future<void> Function()> play() {
   Future<bool> play() async {
     // List<Future<void> Function()> futures = [];
+    trackOptions = trackOptions.copyWith(isTrackOn: true);
     var playing = false;
     for (var playlist in playlists) {
       if (playlist.selectedFiles().isEmpty) continue;
       await playlist.player.play();
       playing = true;
     }
+    notifyListeners();
     return playing;
   }
 

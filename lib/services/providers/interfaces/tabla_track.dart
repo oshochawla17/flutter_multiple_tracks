@@ -13,7 +13,7 @@ import 'package:flutter_multiple_tracks/utils/helper.dart';
 class TablaPakhawajTrack with ChangeNotifier implements InstrumentTrack {
   TablaPakhawajTrack(
       {this.trackOptions = const TrackOptions(
-        isTrackOn: true,
+        isTrackOn: false,
         useGlobalPitch: true,
         useGlobalTempo: true,
         volume: 1.0,
@@ -72,12 +72,14 @@ class TablaPakhawajTrack with ChangeNotifier implements InstrumentTrack {
   // List<Future<void> Function()> play() {
   Future<bool> play() async {
     // List<Future<void> Function()> futures = [];
+    trackOptions = trackOptions.copyWith(isTrackOn: true);
     var playing = false;
     for (var playlist in playlists) {
       if (playlist.selectedFiles().isEmpty) continue;
       await playlist.player.play();
       playing = true;
     }
+    notifyListeners();
     return playing;
   }
 

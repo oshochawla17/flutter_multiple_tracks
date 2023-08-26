@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/tanpura_track.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,8 @@ class TanpuraSlider extends StatelessWidget {
         providerVal.trackOptions.copyWith(tempo: tempo),
       );
       providerVal as TanpuraTrack;
-      providerVal.setTempo(tempo);
+      providerVal
+          .updateFromGlobal(context.read<GlobalOptionsProvider>().options);
     }
 
     const int minTempo = 30;

@@ -50,6 +50,7 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
 
   @override
   Future<bool> play() async {
+    trackOptions = trackOptions.copyWith(isTrackOn: true);
     var resullt = await updateFromGlobal(null);
     if (!resullt) {
       isPlaying = false;
@@ -57,6 +58,7 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
       return false;
     }
     await _playlist.player.play();
+    notifyListeners();
     return resullt;
   }
 

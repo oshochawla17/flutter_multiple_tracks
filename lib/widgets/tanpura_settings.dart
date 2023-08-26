@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
+import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/widgets/tanpura_sllider.dart';
+import 'package:flutter_multiple_tracks/widgets/tempo_tuner.dart';
+import 'package:flutter_multiple_tracks/widgets/tempo_tuner_local.dart';
+import 'package:provider/provider.dart';
 
 class TanpuraSettings extends StatelessWidget {
   const TanpuraSettings({
@@ -10,35 +15,27 @@ class TanpuraSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        height: 100,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
-        ),
-        child: const Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(top: 5.0),
-                  child: Row(
-                    children: [
-                      SizedBox(width: 55, child: Text('BPM:')),
-                      TanpuraSlider()
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+          height: 200,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+          ),
+          child: TempoTunerLocal(
+            onTempoChange: (int newVal) {
+              if (newVal > 150) {
+                newVal = 150;
+              } else if (newVal < 60) {
+                newVal = 60;
+              }
+              var provider = context.read<InstrumentTrack>();
+              var globalProvider = context.read<GlobalOptionsProvider>();
+              provider.updateFromLocal(provider.trackOptions.copyWith(
+                tempo: newVal,
+              ));
+              provider.updateFromGlobal(globalProvider.options);
+            },
+          )),
     );
   }
 }

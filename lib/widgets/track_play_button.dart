@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments.dart';
+import 'package:flutter_multiple_tracks/services/models/track_options.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_track_status.dart';
 import 'package:flutter_multiple_tracks/services/providers/instruments_playing_status_provider.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
@@ -20,7 +21,7 @@ class TrackPlayButton extends StatelessWidget {
 
         return Container(
           child: ElevatedButton(
-              onPressed: !provider.isPlaying
+              onPressed: !provider.isPlaying && !provider.trackOptions.isTrackOn
                   ? () async {
                       var result = await provider.play();
                       if (result) {
@@ -30,7 +31,9 @@ class TrackPlayButton extends StatelessWidget {
                     }
                   : () async {
                       await provider.stop();
-
+                      provider.updateFromLocal(provider.trackOptions.copyWith(
+                        isTrackOn: false,
+                      ));
                       var globalTrackStatus =
                           // ignore: use_build_context_synchronously
                           context.read<GlobalTrackStatus>();
@@ -45,8 +48,9 @@ class TrackPlayButton extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
-                backgroundColor:
-                    provider.isPlaying ? Colors.lightBlue : Colors.white,
+                backgroundColor: provider.trackOptions.isTrackOn
+                    ? Colors.lightBlue
+                    : Colors.white,
                 foregroundColor: Colors.black,
               ),
               child: Row(

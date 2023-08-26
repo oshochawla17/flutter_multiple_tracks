@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_multiple_tracks/services/models/track_options.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
+import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/widgets/clickable_text.dart';
 import 'package:provider/provider.dart';
 
-class TempoTuner extends StatelessWidget {
-  const TempoTuner({
+class TempoTunerLocal extends StatelessWidget {
+  const TempoTunerLocal({
     super.key,
     required this.onTempoChange,
   });
+
   final Function(
     int,
   ) onTempoChange;
   @override
   Widget build(BuildContext context) {
-    return Consumer<GlobalOptionsProvider>(builder: (context, provider, child) {
+    return Consumer<InstrumentTrack>(builder: (context, provider, child) {
       return SliderTheme(
         data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay),
         child: Container(
@@ -45,7 +47,7 @@ class TempoTuner extends StatelessWidget {
                         child: Center(
                           child: InkWell(
                             onTap: () {
-                              var newVal = provider.options.tempo + 1;
+                              var newVal = provider.trackOptions.tempo! + 1;
                               onTempoChange(newVal);
                             },
                             child: const Icon(Icons.add),
@@ -62,7 +64,7 @@ class TempoTuner extends StatelessWidget {
                         child: Center(
                           child: InkWell(
                             onTap: () {
-                              var newVal = provider.options.tempo - 1;
+                              var newVal = provider.trackOptions.tempo! - 1;
                               onTempoChange(newVal);
                             },
                             child: const Icon(Icons.remove),
@@ -77,10 +79,10 @@ class TempoTuner extends StatelessWidget {
                   RotatedBox(
                     quarterTurns: 3,
                     child: Slider(
-                      value: provider.options.tempo.toDouble(),
-                      label: (provider.options.tempo).toStringAsFixed(0),
-                      max: TrackOptions.maxTempo.toDouble(),
-                      min: TrackOptions.minTempo.toDouble(),
+                      value: provider.trackOptions.tempo!.toDouble(),
+                      label: (provider.trackOptions.tempo!).toStringAsFixed(0),
+                      min: 60,
+                      max: 150,
                       onChanged: (double value) {
                         onTempoChange(value.toInt());
                       },
@@ -104,7 +106,7 @@ class TempoTuner extends StatelessWidget {
                         child: Center(
                           child: InkWell(
                             onTap: () {
-                              var newVal = provider.options.tempo + 5;
+                              var newVal = provider.trackOptions.tempo! + 5;
                               onTempoChange(newVal);
                             },
                             child: const Text('+5',
@@ -124,7 +126,7 @@ class TempoTuner extends StatelessWidget {
                         child: Center(
                           child: InkWell(
                             onTap: () {
-                              var newVal = provider.options.tempo - 5;
+                              var newVal = provider.trackOptions.tempo! - 5;
                               onTempoChange(newVal);
                             },
                             child: const Text('-5',
@@ -152,7 +154,7 @@ class TempoTuner extends StatelessWidget {
                     width: 60,
                     height: 60,
                     child: ClickableText(
-                      number: provider.options.tempo,
+                      number: provider.trackOptions.tempo!,
                       min: TrackOptions.minTempo,
                       max: TrackOptions.maxTempo,
                       formatText: (String text) {

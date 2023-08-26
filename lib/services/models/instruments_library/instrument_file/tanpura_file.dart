@@ -4,18 +4,61 @@ import 'package:flutter_multiple_tracks/services/models/music_scales.dart';
 
 class TanpuraFile extends InstrumentFile {
   TanpuraFile({
-    required this.instrument,
+    // required this.instrument,
     required this.name,
     required this.path,
     required this.originalScale,
-    this.isSelected = true,
+    required this.subtype,
+    required this.originalTempo,
+    required this.tempoRange,
+    required this.scaleRange,
+    required this.isSelected,
   });
 
-  @override
-  final bool isSelected;
+  factory TanpuraFile.tanpura1(
+      {required String name,
+      required String path,
+      required Scale originalScale,
+      required String subtype,
+      required int originalTempo,
+      required List<int> tempoRange,
+      required List<Scale> scaleRange,
+      required bool isSelected}) {
+    return TanpuraFile(
+        // instrument: Instruments.tanpura1,
+        name: name,
+        path: path,
+        originalScale: originalScale,
+        subtype: subtype,
+        originalTempo: originalTempo,
+        tempoRange: tempoRange,
+        scaleRange: scaleRange,
+        isSelected: isSelected);
+  }
 
-  @override
-  final Instruments instrument;
+  factory TanpuraFile.tanpura2(
+      {required String name,
+      required String path,
+      required Scale originalScale,
+      required String subtype,
+      required int originalTempo,
+      required List<int> tempoRange,
+      required List<Scale> scaleRange,
+      required bool isSelected}) {
+    return TanpuraFile(
+        // instrument: Instruments.tanpura2,
+        name: name,
+        path: path,
+        originalScale: originalScale,
+        subtype: subtype,
+        originalTempo: originalTempo,
+        tempoRange: tempoRange,
+        scaleRange: scaleRange,
+        isSelected: isSelected);
+  }
+
+  // @override
+  // final Instruments instrument;
 
   @override
   final String name;
@@ -24,30 +67,18 @@ class TanpuraFile extends InstrumentFile {
   final String path;
 
   final Scale originalScale;
-  factory TanpuraFile.tanpura1(
-      {required String name,
-      required String path,
-      required Scale originalScale,
-      required bool isSelected}) {
-    return TanpuraFile(
-        instrument: Instruments.tanpura1,
-        name: name,
-        path: path,
-        originalScale: originalScale,
-        isSelected: isSelected);
-  }
-  factory TanpuraFile.tanpura2(
-      {required String name,
-      required String path,
-      required Scale originalScale,
-      required bool isSelected}) {
-    return TanpuraFile(
-        instrument: Instruments.tanpura2,
-        name: name,
-        path: path,
-        originalScale: originalScale,
-        isSelected: isSelected);
-  }
+  @override
+  final bool isSelected;
+
+  final String subtype;
+
+  final int originalTempo;
+
+  final List<int> tempoRange;
+
+  final List<Scale> scaleRange;
+
+  @override
   InstrumentFile copyWith({
     Instruments? instrument,
     String? name,
@@ -56,15 +87,45 @@ class TanpuraFile extends InstrumentFile {
     bool? isSelected,
   }) {
     return TanpuraFile(
-      instrument: instrument ?? this.instrument,
+      // instrument: instrument ?? this.instrument,
       name: name ?? this.name,
       path: path ?? this.path,
       originalScale: originalScale ?? this.originalScale,
+      subtype: subtype,
+      originalTempo: originalTempo,
+      tempoRange: tempoRange,
+      scaleRange: scaleRange,
       isSelected: isSelected ?? this.isSelected,
     );
   }
 
   bool noteInRange(MusicNote note) {
-    return note == originalScale.note;
+    // 0 - 11
+    // 1 - 3
+    // note - 0
+    if (note == originalScale.note) return true;
+    var startIndex = scaleRange[0].note.index;
+    var endIndex = scaleRange[1].note.index < startIndex
+        ? 12 + scaleRange[1].note.index
+        : scaleRange[1].note.index;
+    var noteIndex = note.index < startIndex ? 12 + note.index : note.index;
+    return startIndex <= noteIndex && noteIndex <= endIndex;
+  }
+
+  List<MusicNote> noteRange() {
+    var startIndex = scaleRange[0].note.index;
+    var endIndex = scaleRange[1].note.index < startIndex
+        ? 12 + scaleRange[1].note.index
+        : scaleRange[1].note.index;
+    List<MusicNote> notes = [];
+    for (var i = startIndex; i <= endIndex; i++) {
+      notes.add(MusicNote.values[i % 12]);
+    }
+    return notes;
+  }
+
+  bool tempoInRange(int tempo) {
+    return tempo == originalTempo ||
+        (tempoRange[0] <= tempo && tempo <= tempoRange[1]);
   }
 }

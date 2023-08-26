@@ -1,7 +1,7 @@
 import 'package:flutter_multiple_tracks/services/models/instruments.dart';
 
 abstract class InstrumentFile {
-  Instruments get instrument;
+  // Instruments get instrument;
   String get name;
   String get path;
   bool get isSelected;

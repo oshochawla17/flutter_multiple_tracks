@@ -104,6 +104,48 @@ class FileParser {
     }
   }
 
+  static TanpuraFile? parseTanpuraFiles(String file) {
+    try {
+      var splits = file.split('Tanpura/');
+      if (splits.length > 1) {
+        var sub = splits[1].split('/');
+        if (sub.length < 2) {
+          return null;
+        }
+        var subtype = sub[0];
+        var fileName = sub[1];
+        var tablaProps = fileName.split('-');
+        if (tablaProps.length == 7) {
+          // C#3-030-B2_-D#3-020-050-TT01.wav
+          var scale = tablaProps[0].replaceAll('_', '');
+          var tempo = tablaProps[1];
+          var rangeStart = tablaProps[2].replaceAll('_', '');
+          var rangeEnd = tablaProps[3];
+          var tempoStart = tablaProps[4];
+          var tempoEnd = tablaProps[5];
+
+          return TanpuraFile(
+            name: fileName,
+            path: file,
+            originalScale: Scale.fromString(scale),
+            subtype: subtype,
+            originalTempo: int.parse(tempo),
+            tempoRange: [int.parse(tempoStart), int.parse(tempoEnd)],
+            scaleRange: [
+              Scale.fromString(rangeStart),
+              Scale.fromString(rangeEnd)
+            ],
+            isSelected: true,
+          );
+        }
+      }
+      return null;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   static InstrumentFile? parseSwarmandalFile(String file) {
     try {
       // C#3-030-B2_-D#3-020-050-TT01.wav
@@ -143,35 +185,35 @@ class FileParser {
     }
   }
 
-  static List<InstrumentFile>? parseTanpuraFiles(String file) {
-    try {
-      var splits = file.split('Tanpura/');
-      if (splits.length > 1) {
-        // 04-D3.wav
-        var fileName = splits[1];
-        var tanpuraProps = fileName.split('-');
-        if (tanpuraProps.length == 2) {
-          var scale = tanpuraProps[1].split('.')[0];
-          return [
-            TanpuraFile.tanpura1(
-                name: fileName,
-                path: file,
-                originalScale: Scale.fromString(scale),
-                isSelected: true),
-            TanpuraFile.tanpura2(
-                name: fileName,
-                path: file,
-                originalScale: Scale.fromString(scale),
-                isSelected: true),
-          ];
-        }
-      }
-      return null;
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
+  // static List<InstrumentFile>? parseTanpuraFiles(String file) {
+  //   try {
+  //     var splits = file.split('Tanpura/');
+  //     if (splits.length > 1) {
+  //       // 04-D3.wav
+  //       var fileName = splits[1];
+  //       var tanpuraProps = fileName.split('-');
+  //       if (tanpuraProps.length == 2) {
+  //         var scale = tanpuraProps[1].split('.')[0];
+  //         return [
+  //           TanpuraFile.tanpura1(
+  //               name: fileName,
+  //               path: file,
+  //               originalScale: Scale.fromString(scale),
+  //               isSelected: true),
+  //           TanpuraFile.tanpura2(
+  //               name: fileName,
+  //               path: file,
+  //               originalScale: Scale.fromString(scale),
+  //               isSelected: true),
+  //         ];
+  //       }
+  //     }
+  //     return null;
+  //   } catch (e) {
+  //     print(e);
+  //     return null;
+  //   }
+  // }
 
   static Future<Map<Instruments, InstrumentLibrary>> traverseDirectory(
       String rootPath) async {
@@ -196,12 +238,10 @@ class FileParser {
       }
     }
     Map<String, List<TablaPakhawajFile>> tablaFiles = {};
+    Map<String, List<TanpuraFile>> tanpuraFiles = {};
     Map<String, List<TablaPakhawajFile>> pakhawajFiles = {};
     Map<String, List<SwarmandalFile>> swarmandalFiles = {};
     Map<String, List<MetronomeFile>> metronomeFiles = {};
-
-    List<TanpuraFile> tanpura1Files = [];
-    List<TanpuraFile> tanpura2Files = [];
 
     for (String file in totalFiles) {
       if (file.contains('Tabla') || file.contains('Pakhawaj')) {
@@ -231,6 +271,17 @@ class FileParser {
           }
           pakhawajFiles[subtype]!.add(parsedFile);
         }
+      } else if (file.contains('Tanpura')) {
+        var parsedFile = parseTanpuraFiles(file);
+        if (parsedFile == null) {
+          continue;
+        }
+
+        var subtype = parsedFile.subtype;
+        if (tanpuraFiles[subtype] == null) {
+          tanpuraFiles[subtype] = [];
+        }
+        tanpuraFiles[subtype]!.add(parsedFile);
       } else if (file.contains('Swarmandal')) {
         var parsedFile = parseSwarmandalFile(file);
         if (parsedFile == null) {
@@ -242,13 +293,6 @@ class FileParser {
           swarmandalFiles[subtype] = [];
         }
         swarmandalFiles[subtype]!.add(parsedFile);
-      } else if (file.contains('Tanpura')) {
-        var parsedFile = parseTanpuraFiles(file);
-        if (parsedFile == null) {
-          continue;
-        }
-        tanpura1Files.add(parsedFile[0] as TanpuraFile);
-        tanpura2Files.add(parsedFile[1] as TanpuraFile);
       }
     }
 
@@ -262,16 +306,14 @@ class FileParser {
         SwarmandalLibrary(raagFiles: swarmandalFiles);
     MetronomeLibrary metronomeLibrary =
         MetronomeLibrary(taalFiles: metronomeFiles);
-    TanpuraLibrary tanpura1Library =
-        TanpuraLibrary.tanpura1(files: tanpura1Files);
-    TanpuraLibrary tanpura2Library =
-        TanpuraLibrary.tanpura2(files: tanpura2Files);
+    TanpuraLibrary tanpuraLibrary = TanpuraLibrary(subfiles: tanpuraFiles);
+
     return {
       Instruments.tabla: tablaLibrary,
       Instruments.pakhawaj: pakhawajLibrary,
       Instruments.metronome: metronomeLibrary,
-      Instruments.tanpura1: tanpura1Library,
-      Instruments.tanpura2: tanpura2Library,
+      Instruments.tanpura1: tanpuraLibrary,
+      Instruments.tanpura2: tanpuraLibrary,
       Instruments.swarmandal: swarmandalLibrary,
     };
   }
