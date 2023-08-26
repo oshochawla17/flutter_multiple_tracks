@@ -8,7 +8,7 @@ import 'package:flutter_multiple_tracks/services/providers/playlist_provider.dar
 
 abstract class InstrumentTrack with ChangeNotifier {
   Instruments get instrument;
-  bool get isPlaying;
+  bool isPlaying = false;
   bool get useGlobalScale;
   List<TrackPlaylist> get playlists;
   InstrumentLibrary? get instrumentLibrary;
@@ -24,7 +24,7 @@ abstract class InstrumentTrack with ChangeNotifier {
   bool updateFromLocal(TrackOptions localOptions);
   void load(InstrumentLibrary library);
   Future<void> resetPlaylist();
-  Future<bool> setPitch(int cents);
+  Future<bool> setPitch(int cents, SoundBlendGlobalOptions globalOptions);
 
   InstrumentFile? get currentPlaying;
 }

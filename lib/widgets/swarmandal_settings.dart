@@ -28,30 +28,7 @@ class _SwarmandalSettingsState extends State<SwarmandalSettings> {
 
   @override
   Widget build(BuildContext context) {
-    onPitchChange(pitch) {
-      final providerVal = context.read<InstrumentTrack>();
-
-      var newUseGlobalPitch = trackOptions.useGlobalPitch;
-      if (newUseGlobalPitch) {
-        // set pitch to global pitch value
-        var globalOptionsProvider = context.read<GlobalOptionsProvider>();
-        providerVal.setPitch(globalOptionsProvider.options.pitch);
-      } else {
-        // set pitch to default
-        providerVal.setPitch(pitch);
-      }
-      providerVal.updateFromLocal(
-        trackOptions.copyWith(
-          volume: providerVal.trackOptions.volume,
-          isMute: providerVal.trackOptions.isMute,
-          isTrackOn: trackOptions.isTrackOn,
-          useGlobalPitch: trackOptions.useGlobalPitch,
-          useGlobalTempo: trackOptions.useGlobalTempo,
-          pitch: pitch,
-          tempo: trackOptions.tempo,
-        ),
-      );
-    }
+    onPitchChange(pitch) {}
 
     return SingleChildScrollView(
       child: Container(

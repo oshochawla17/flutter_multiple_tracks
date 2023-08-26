@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_multiple_tracks/services/bloc/master_bloc/master.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_track_status.dart';
+import 'package:flutter_multiple_tracks/services/providers/instruments_playing_status_provider.dart';
 import 'package:flutter_multiple_tracks/services/providers/library_provider.dart';
 import 'package:flutter_multiple_tracks/widgets/audio_directory.dart';
 import 'package:flutter_multiple_tracks/widgets/master_row.dart';
@@ -30,6 +31,9 @@ class SoundBlendHome extends StatelessWidget {
           ),
           ChangeNotifierProvider<LibraryProvider>(
             create: (context) => LibraryProvider(),
+          ),
+          ChangeNotifierProvider<InstrumentsPlayingStatusProvider>(
+            create: (context) => InstrumentsPlayingStatusProvider(),
           ),
         ],
         child: Column(

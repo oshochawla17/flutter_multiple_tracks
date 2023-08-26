@@ -10,12 +10,14 @@ import 'package:flutter_multiple_tracks/services/models/sound_blend_global_optio
 import 'package:flutter_multiple_tracks/services/models/track_options.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/playlist_provider.dart';
+import 'package:flutter_multiple_tracks/utils/helper.dart';
 
 class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   TanpuraTrack(
-      {this.trackOptions = const TrackOptions(
+      {required this.instrument,
+      this.trackOptions = const TrackOptions(
         isTrackOn: true,
-        useGlobalPitch: false,
+        useGlobalPitch: true,
         useGlobalTempo: false,
         volume: 1.0,
         isMute: false,
@@ -34,7 +36,7 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   Scale? chosenScale;
 
   @override
-  final Instruments instrument = Instruments.tanpura;
+  final Instruments instrument;
 
   @override
   TanpuraFile? currentPlaying;
@@ -204,8 +206,15 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   }
 
   @override
-  Future<bool> setPitch(int cents) async {
-    throw UnimplementedError();
+  Future<bool> setPitch(
+      int cents, SoundBlendGlobalOptions globalOptions) async {
+    // return updateFromGlobalWithScale(globalOptions, chosenScale);
+    var pitchFactor =
+        AudioHelper.semitonesToPitchFactor((globalOptions.pitch / 100));
+    for (var element in playlists) {
+      await element.player.setPitch(pitchFactor);
+    }
+    return true;
   }
 
   @override
@@ -271,7 +280,7 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   Future<bool> updateFromGlobalWithScale(
       SoundBlendGlobalOptions globalOptions, Scale? scale) async {
     var beforePlaying = isPlaying;
-    stopPlaying = true;
+    // stopPlaying = true;
     if (library == null) return false;
 
     List<List<TanpuraFile>> validPlaylistFiles = [
@@ -285,7 +294,6 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
     Scale playlist3Scale =
         Scale(note: validNote, octave: validNote == MusicNote.B ? 3 : 4);
     Scale playlist1Scale = scale ?? playlist3Scale.subtract(5);
-    print(playlist1Scale.toString());
     var validScales = [
       playlist1Scale,
       playlist3Scale,
@@ -306,6 +314,13 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
       var result = await updatePlaylist(playlists[i], validPlaylistFiles[i]);
       if (!result) return false;
     }
+
+    var pitchFactor =
+        AudioHelper.semitonesToPitchFactor((globalOptions.pitch / 100));
+    for (var element in playlists) {
+      await element.player.setPitch(pitchFactor);
+    }
+
     if (beforePlaying) {
       var result = await playTracksWithDelay();
       return result;

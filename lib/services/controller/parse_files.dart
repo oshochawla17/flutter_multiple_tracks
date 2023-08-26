@@ -142,7 +142,7 @@ class FileParser {
     }
   }
 
-  static InstrumentFile? parseTanpuraFiles(String file) {
+  static List<InstrumentFile>? parseTanpuraFiles(String file) {
     try {
       var splits = file.split('Tanpura/');
       if (splits.length > 1) {
@@ -151,11 +151,18 @@ class FileParser {
         var tanpuraProps = fileName.split('-');
         if (tanpuraProps.length == 2) {
           var scale = tanpuraProps[1].split('.')[0];
-          return TanpuraFile(
-              name: fileName,
-              path: file,
-              originalScale: Scale.fromString(scale),
-              isSelected: true);
+          return [
+            TanpuraFile.tanpura1(
+                name: fileName,
+                path: file,
+                originalScale: Scale.fromString(scale),
+                isSelected: true),
+            TanpuraFile.tanpura2(
+                name: fileName,
+                path: file,
+                originalScale: Scale.fromString(scale),
+                isSelected: true),
+          ];
         }
       }
       return null;
@@ -182,7 +189,8 @@ class FileParser {
     Map<String, List<SwarmandalFile>> swarmandalFiles = {};
     Map<String, List<MetronomeFile>> metronomeFiles = {};
 
-    List<TanpuraFile> tanpuraFiles = [];
+    List<TanpuraFile> tanpura1Files = [];
+    List<TanpuraFile> tanpura2Files = [];
 
     for (String file in totalFiles) {
       if (file.contains('Tabla') || file.contains('Pakhawaj')) {
@@ -228,7 +236,8 @@ class FileParser {
         if (parsedFile == null) {
           continue;
         }
-        tanpuraFiles.add(parsedFile as TanpuraFile);
+        tanpura1Files.add(parsedFile[0] as TanpuraFile);
+        tanpura2Files.add(parsedFile[1] as TanpuraFile);
       }
     }
 
@@ -242,12 +251,16 @@ class FileParser {
         SwarmandalLibrary(raagFiles: swarmandalFiles);
     MetronomeLibrary metronomeLibrary =
         MetronomeLibrary(taalFiles: metronomeFiles);
-    TanpuraLibrary tanpuraLibrary = TanpuraLibrary(files: tanpuraFiles);
+    TanpuraLibrary tanpura1Library =
+        TanpuraLibrary.tanpura1(files: tanpura1Files);
+    TanpuraLibrary tanpura2Library =
+        TanpuraLibrary.tanpura2(files: tanpura2Files);
     return {
       Instruments.tabla: tablaLibrary,
       Instruments.pakhawaj: pakhawajLibrary,
       Instruments.metronome: metronomeLibrary,
-      Instruments.tanpura: tanpuraLibrary,
+      Instruments.tanpura1: tanpura1Library,
+      Instruments.tanpura2: tanpura2Library,
       Instruments.swarmandal: swarmandalLibrary,
     };
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_multiple_tracks/services/models/instruments.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_track_status.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
@@ -37,7 +36,6 @@ class TrackRow extends StatelessWidget {
     }
 
     return Consumer<InstrumentTrack>(builder: (context, provider, child) {
-      if (provider is TablaPakhawajTrack) {}
       return Builder(builder: (context) {
         return Card(
           elevation: 2,

@@ -120,10 +120,14 @@ class TablaPakhawajTrack with ChangeNotifier implements InstrumentTrack {
   }
 
   @override
-  Future<bool> setPitch(int cents) async {
-    await _playlist.player
-        .setPitch(AudioHelper.semitonesToPitchFactor(cents / 100));
-
+  Future<bool> setPitch(
+      int cents, SoundBlendGlobalOptions globalOptions) async {
+    // return updateFromGlobalWithScale(globalOptions, chosenScale);
+    var pitchFactor =
+        AudioHelper.semitonesToPitchFactor((globalOptions.pitch / 100));
+    for (var element in playlists) {
+      await element.player.setPitch(pitchFactor);
+    }
     return true;
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter_multiple_tracks/services/models/music_scales.dart';
 
 class TanpuraFile extends InstrumentFile {
   TanpuraFile({
+    required this.instrument,
     required this.name,
     required this.path,
     required this.originalScale,
@@ -14,7 +15,7 @@ class TanpuraFile extends InstrumentFile {
   final bool isSelected;
 
   @override
-  final Instruments instrument = Instruments.tanpura;
+  final Instruments instrument;
 
   @override
   final String name;
@@ -23,14 +24,39 @@ class TanpuraFile extends InstrumentFile {
   final String path;
 
   final Scale originalScale;
-
+  factory TanpuraFile.tanpura1(
+      {required String name,
+      required String path,
+      required Scale originalScale,
+      required bool isSelected}) {
+    return TanpuraFile(
+        instrument: Instruments.tanpura1,
+        name: name,
+        path: path,
+        originalScale: originalScale,
+        isSelected: isSelected);
+  }
+  factory TanpuraFile.tanpura2(
+      {required String name,
+      required String path,
+      required Scale originalScale,
+      required bool isSelected}) {
+    return TanpuraFile(
+        instrument: Instruments.tanpura2,
+        name: name,
+        path: path,
+        originalScale: originalScale,
+        isSelected: isSelected);
+  }
   InstrumentFile copyWith({
+    Instruments? instrument,
     String? name,
     String? path,
     Scale? originalScale,
     bool? isSelected,
   }) {
     return TanpuraFile(
+      instrument: instrument ?? this.instrument,
       name: name ?? this.name,
       path: path ?? this.path,
       originalScale: originalScale ?? this.originalScale,

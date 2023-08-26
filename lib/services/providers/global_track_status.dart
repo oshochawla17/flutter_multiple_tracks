@@ -14,8 +14,8 @@ class GlobalTrackStatus extends ChangeNotifier {
   bool isPlaying;
 
   List<InstrumentTrack> instruments = [
-    TanpuraTrack(),
-    TanpuraTrack(),
+    TanpuraTrack(instrument: Instruments.tanpura1),
+    TanpuraTrack(instrument: Instruments.tanpura2),
     TablaPakhawajTrack.tabla(),
     TablaPakhawajTrack.pakhawaj(),
     MetronomeTrack(),
@@ -77,7 +77,7 @@ class GlobalTrackStatus extends ChangeNotifier {
     try {
       for (var instrument in instruments) {
         if (instrument.trackOptions.useGlobalPitch) {
-          instrument.updateFromGlobal(globalOptions);
+          instrument.setPitch(globalOptions.pitch, globalOptions);
         }
       }
     } catch (e) {

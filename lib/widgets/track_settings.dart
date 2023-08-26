@@ -33,30 +33,7 @@ class _TrackSettingsState extends State<TrackSettings> {
 
   @override
   Widget build(BuildContext context) {
-    onPitchChange(pitch) {
-      final providerVal = context.read<InstrumentTrack>();
-
-      var newUseGlobalPitch = useGlobalPitch;
-      if (newUseGlobalPitch) {
-        // set pitch to global pitch value
-        var globalOptionsProvider = context.read<GlobalOptionsProvider>();
-        providerVal.setPitch(globalOptionsProvider.options.pitch);
-      } else {
-        // set pitch to default
-        providerVal.setPitch(pitch);
-      }
-      providerVal.updateFromLocal(
-        TrackOptions(
-          volume: providerVal.trackOptions.volume,
-          isMute: providerVal.trackOptions.isMute,
-          isTrackOn: isTrackOn,
-          useGlobalPitch: useGlobalPitch,
-          useGlobalTempo: useGlobalTempo,
-          pitch: pitch,
-          tempo: tempo,
-        ),
-      );
-    }
+    onPitchChange(pitch) {}
 
     onTempoChange(tempo) {
       final providerVal = context.read<InstrumentTrack>();
