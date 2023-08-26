@@ -18,9 +18,8 @@ class TanpuraScaleDropdown extends StatelessWidget {
         elevation: 16,
         style: const TextStyle(color: Colors.deepPurple),
         onChanged: (Scale? value) {
-          tanpura.updatePlaylist1Scale(value);
-          tanpura
-              .updateFromGlobal(context.read<GlobalOptionsProvider>().options);
+          tanpura.updatePlaylist1Scale(
+              value, context.read<GlobalOptionsProvider>().options);
         },
         items: tanpura.availableNotes().map<DropdownMenuItem<Scale>>((value) {
           return DropdownMenuItem<Scale>(

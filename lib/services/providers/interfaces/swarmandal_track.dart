@@ -7,6 +7,7 @@ import 'package:flutter_multiple_tracks/services/models/instruments_library/inst
 import 'package:flutter_multiple_tracks/services/models/instruments_library/swarmandal_library.dart';
 import 'package:flutter_multiple_tracks/services/models/music_scales.dart';
 import 'package:flutter_multiple_tracks/services/models/sound_blend_global_options.dart';
+import 'package:flutter_multiple_tracks/services/models/swarmandal_track_options.dart';
 import 'package:flutter_multiple_tracks/services/models/track_options.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/playlist_provider.dart';
@@ -15,15 +16,7 @@ import 'package:media_kit/media_kit.dart';
 
 class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
   SwarmandalTrack({
-    this.trackOptions = const TrackOptions(
-      isTrackOn: true,
-      useGlobalPitch: true,
-      useGlobalTempo: false,
-      volume: 1.0,
-      isMute: false,
-      pitch: TrackOptions.defaultPitch,
-      tempo: TrackOptions.defaultTempo,
-    ),
+    this.trackOptions = const SwarmandalTrackOptions(),
   });
 
   final TrackPlaylist _playlist = TrackPlaylist(useLoop: false);
@@ -55,17 +48,24 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
   }
 
   @override
-  List<Future<void> Function()> play() {
-    List<Future<void> Function()> futures = [];
-    updatePlaylist(library!.raagFiles[selectedRaag]!).then((value) {
-      _playlist.player.play();
-    });
-
-    for (var playlist in playlists) {
-      if (playlist.selectedFiles.isEmpty) continue;
-      futures.add(playlist.player.play);
+  Future<bool> play() async {
+    // List<Future<void> Function()> futures = [];
+    // updateFromGlobal(null).then((value) {
+    //   _playlist.player.play();
+    // });
+    // for (var playlist in playlists) {
+    //   if (playlist.selectedFiles.isEmpty) continue;
+    //   futures.add(playlist.player.play);
+    // }
+    // return futures;
+    var resullt = await updateFromGlobal(null);
+    if (!resullt) {
+      isPlaying = false;
+      notifyListeners();
+      return false;
     }
-    return futures;
+    await _playlist.player.play();
+    return resullt;
   }
 
   Timer? timer;
@@ -85,23 +85,28 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
       selectedRaag = library.raagFiles.keys.first;
     }
     _playlist.player.stream.playlist.listen((event) {
-      print('playlist index: ${event.index}');
       index = event.index;
     });
     _playlist.player.stream.completed.listen((event) async {
-      print('completed: $event');
       if (event) {
         timer?.cancel();
         await _playlist.player.pause();
         timer = Timer(Duration(milliseconds: 1500), () async {
           _playlist.files.removeAt(0);
-          await _playlist.player.open(Playlist(_playlist.selectedMediaFiles));
+          if (_playlist.files.isEmpty) {
+            isPlaying = false;
+            _playlist.player.stop();
+          } else {
+            await _playlist.player.open(
+              Playlist(_playlist.selectedMediaFiles()),
+              play: _playlist.player.state.playing,
+            );
+          }
         });
       }
     });
     _playlist.player.stream.playing.listen((event) {
       isPlaying = event;
-
       notifyListeners();
     });
     _playlist.player.stream.playlist.listen((event) {
@@ -112,7 +117,6 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
 
         notifyListeners();
       }
-      // notifyListeners();
     });
   }
 
@@ -156,23 +160,33 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
 
   @override
   bool get useGlobalScale => true;
-
+  SoundBlendGlobalOptions? lastGlobalOptions;
   @override
-  Future<bool> updateFromGlobal(SoundBlendGlobalOptions globalOptions) async {
+  Future<bool> updateFromGlobal(SoundBlendGlobalOptions? globalOptions) async {
+    if (globalOptions != null) {
+      lastGlobalOptions = globalOptions;
+    } else if (lastGlobalOptions != null) {
+      globalOptions = lastGlobalOptions;
+    } else {
+      return false;
+    }
     if (library == null) return false;
     var raagFiles = library!.raagFiles[selectedRaag];
     if (raagFiles == null) return false;
     var validFiles = raagFiles
-        .where((file) => file.noteInRange(globalOptions.note))
+        .where((file) => file.noteInRange(globalOptions!.note))
         .toList();
     var beforePlaying = isPlaying;
     if (validFiles.isEmpty) {
+      isPlaying = false;
+      notifyListeners();
       await updatePlaylist(validFiles);
+      return false;
     } else {
       await updatePlaylist(validFiles);
       MusicNote originalNote = validFiles.first.originalScale.note;
 
-      double semitonesDifference = globalOptions.pitch / 100;
+      double semitonesDifference = globalOptions!.pitch / 100;
       if (originalNote != globalOptions.note) {
         var notesRange = validFiles.first.noteRange();
         var originalIndex = notesRange.indexOf(originalNote);
@@ -211,6 +225,7 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
   Future<bool> taggleShuffle() async {
     isShuffle = !isShuffle;
     await _playlist.player.setShuffle(isShuffle);
+    _playlist.isShuffle = isShuffle;
     notifyListeners();
     return true;
   }

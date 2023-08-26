@@ -27,23 +27,26 @@ class GlobalTrackStatus extends ChangeNotifier {
     }
   }
 
-  void play() {
-    bool playing = false;
-    List<Future<void> Function()> futures = [];
+  void play() async {
+    // List<Future<void> Function()> futures = [];
     for (var instrument in instruments) {
       if (instrument.trackOptions.isTrackOn) {
-        var result = instrument.play();
-        futures.addAll(result);
-        if (result.isNotEmpty) {
-          playing = true;
-        }
+        // var result = instrument.play();
+        // futures.addAll(result);
+        // if (result.isNotEmpty) {
+        //   playing = true;
+        // }
+        instrument.play().then((value) {
+          if (value) {
+            isPlaying = true;
+          }
+        });
       }
     }
-    for (var element in futures) {
-      element();
-    }
+    // for (var element in futures) {
+    //   element();
+    // }
 
-    isPlaying = playing;
     notifyListeners();
   }
 

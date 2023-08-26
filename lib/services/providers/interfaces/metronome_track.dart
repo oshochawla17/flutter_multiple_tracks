@@ -45,14 +45,16 @@ class MetronomeTrack with ChangeNotifier implements InstrumentTrack {
   }
 
   @override
-  List<Future<void> Function()> play() {
-    List<Future<void> Function()> futures = [];
-
+  // List<Future<void> Function()> play() {
+  Future<bool> play() async {
+    // List<Future<void> Function()> futures = [];
+    var playing = false;
     for (var playlist in playlists) {
-      if (playlist.selectedFiles.isEmpty) continue;
-      futures.add(playlist.player.play);
+      if (playlist.selectedFiles().isEmpty) continue;
+      await playlist.player.play();
+      playing = true;
     }
-    return futures;
+    return playing;
   }
 
   // @override

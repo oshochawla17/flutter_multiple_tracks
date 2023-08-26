@@ -2,11 +2,11 @@ import 'package:flutter_multiple_tracks/services/models/instruments_library/inst
 import 'package:media_kit/media_kit.dart';
 
 class TrackPlaylist {
-  TrackPlaylist({this.useLoop = true}) {
+  TrackPlaylist({this.useLoop = true, this.isShuffle = false}) {
     load();
   }
   final bool useLoop;
-
+  bool isShuffle = false;
   Player player = Player(
       configuration: const PlayerConfiguration(
     pitch: true,
@@ -23,12 +23,12 @@ class TrackPlaylist {
     player.setVolume(volume);
   }
 
-  List<InstrumentFile> get selectedFiles {
+  List<InstrumentFile> selectedFiles() {
     return files.where((element) => element.isSelected).toList();
   }
 
-  List<Media> get selectedMediaFiles {
-    return selectedFiles
+  List<Media> selectedMediaFiles() {
+    return selectedFiles()
         .map((e) => Media(
               e.path,
             ))
@@ -38,7 +38,7 @@ class TrackPlaylist {
   Future<void> addFile(InstrumentFile file) async {
     await player.open(
         Playlist([
-          ...selectedMediaFiles,
+          ...selectedMediaFiles(),
           Media(
             file.path,
           )
@@ -48,6 +48,9 @@ class TrackPlaylist {
 
   Future<void> addFiles(List<InstrumentFile> newFiles) async {
     var filesCopy = [...newFiles];
+    if (isShuffle) {
+      filesCopy.shuffle();
+    }
     if (filesCopy.isEmpty) {
       await player.stop();
     } else {
@@ -64,14 +67,20 @@ class TrackPlaylist {
   }
 
   Future<void> resetPlaylist() async {
-    if (selectedFiles.isEmpty) {
+    var files = selectedFiles();
+    if (isShuffle) {
+      files.shuffle();
+    }
+    if (selectedFiles().isEmpty) {
       await player.stop();
       return;
     }
     await player.stop();
     await player.open(
         Playlist([
-          ...selectedMediaFiles,
+          ...files.map((e) => Media(
+                e.path,
+              ))
         ]),
         play: player.state.playing);
     return;

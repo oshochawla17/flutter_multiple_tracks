@@ -13,7 +13,8 @@ abstract class InstrumentTrack with ChangeNotifier {
   List<TrackPlaylist> get playlists;
   InstrumentLibrary? get instrumentLibrary;
   late TrackOptions trackOptions;
-  List<Future<void> Function()> play();
+  // List<Future<void> Function()> play();
+  Future<bool> play();
   Future<bool> stop();
   Future<bool> mute();
   Future<bool> unmute();

@@ -80,13 +80,22 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
     return true;
   }
 
-  @override
-  List<Future<void> Function()> play() {
-    stopPlaying = false;
-    List<Future<void> Function()> futures = [];
-    futures.add(playTracksWithDelay);
+  // @override
+  // List<Future<void> Function()> play() {
+  //   stopPlaying = false;
+  //   List<Future<void> Function()> futures = [];
+  //   futures.add(playTracksWithDelay);
 
-    return futures;
+  //   return futures;
+  // }
+  @override
+  // List<Future<void> Function()> play() {
+  Future<bool> play() async {
+    stopPlaying = false;
+    var result = await playTracksWithDelay();
+    isPlaying = result;
+    notifyListeners();
+    return result;
   }
 
   List<Scale> availableNotes() {
@@ -98,9 +107,10 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   }
 
   Timer? timer;
-  Future<void> playTracksWithDelay() async {
+  Future<bool> playTracksWithDelay() async {
     int milliseconds = 60000 ~/ trackOptions.tempo!;
-    restartPlaylist(playlists[0]);
+    bool play = await restartPlaylist(playlists[0]);
+    if (!play) return false;
     int currentIndex = 1;
     timer?.cancel();
     timer = Timer.periodic(Duration(milliseconds: milliseconds), (timer) {
@@ -123,9 +133,9 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
 
     if (stopPlaying) {
       timer?.cancel();
-      return;
+      return false;
     }
-    return;
+    return true;
     // for (int index = 0; index < playlists.length; index++) {
     //   var playlist = playlists[index];
     //   if (stopPlaying) {
@@ -155,7 +165,7 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   }
 
   Future<bool> restartPlaylist(TrackPlaylist playlist) async {
-    if (stopPlaying) return true;
+    if (stopPlaying) return false;
     if (playlist.player.state.playing) {
       await playlist.resetPlaylist();
     } else {
@@ -179,11 +189,11 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   void load(InstrumentLibrary library) {
     this.library = library as TanpuraLibrary;
 
-    playlists[0].player.stream.playing.listen((event) {
-      isPlaying = event;
-      print('setting isPlaying to $event');
-      notifyListeners();
-    });
+    // playlists[0].player.stream.playing.listen((event) {
+    //   isPlaying = event;
+    //   print('setting isPlaying to $event');
+    //   notifyListeners();
+    // });
   }
 
   @override
@@ -232,10 +242,15 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
     return false;
   }
 
-  Future<bool> updatePlaylist1Scale(Scale? scale) async {
+  Future<bool> updatePlaylist1Scale(
+      Scale? scale, SoundBlendGlobalOptions globalOptions) async {
     if (scale != null) {
       if (library != null) {
         chosenScale = scale;
+        var result = await updateFromGlobalWithScale(globalOptions, scale);
+        if (!result) {
+          isPlaying = false;
+        }
         notifyListeners();
         return true;
       }
@@ -246,6 +261,17 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
 
   @override
   Future<bool> updateFromGlobal(SoundBlendGlobalOptions globalOptions) async {
+    chosenScale = null;
+    var result = await updateFromGlobalWithScale(globalOptions, chosenScale);
+    isPlaying = result;
+    notifyListeners();
+    return result;
+  }
+
+  Future<bool> updateFromGlobalWithScale(
+      SoundBlendGlobalOptions globalOptions, Scale? scale) async {
+    var beforePlaying = isPlaying;
+    stopPlaying = true;
     if (library == null) return false;
 
     List<List<TanpuraFile>> validPlaylistFiles = [
@@ -258,7 +284,7 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
     var validNote = globalOptions.note;
     Scale playlist3Scale =
         Scale(note: validNote, octave: validNote == MusicNote.B ? 3 : 4);
-    Scale playlist1Scale = chosenScale ?? playlist3Scale.subtract(5);
+    Scale playlist1Scale = scale ?? playlist3Scale.subtract(5);
     print(playlist1Scale.toString());
     var validScales = [
       playlist1Scale,
@@ -275,14 +301,16 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
         }
       }
     }
-    var beforePlaying = isPlaying;
+
     for (var i = 0; i < validPlaylistFiles.length; i++) {
-      await updatePlaylist(playlists[i], validPlaylistFiles[i]);
+      var result = await updatePlaylist(playlists[i], validPlaylistFiles[i]);
+      if (!result) return false;
     }
     if (beforePlaying) {
-      await playTracksWithDelay();
+      var result = await playTracksWithDelay();
+      return result;
     }
-    return true;
+    return beforePlaying;
   }
 
   @override

@@ -7,6 +7,7 @@ import 'package:flutter_multiple_tracks/services/providers/interfaces/swarmandal
 import 'package:flutter_multiple_tracks/services/providers/interfaces/tabla_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/tanpura_track.dart';
 import 'package:flutter_multiple_tracks/widgets/raag_dropdown.dart';
+import 'package:flutter_multiple_tracks/widgets/swarmandal_settings.dart';
 import 'package:flutter_multiple_tracks/widgets/taal_dropdown.dart';
 import 'package:flutter_multiple_tracks/widgets/tanpura_settings.dart';
 import 'package:flutter_multiple_tracks/widgets/tanupura_scale_dropdown.dart';
@@ -55,7 +56,7 @@ class TrackRow extends StatelessWidget {
                         opacity: provider.isShuffle ? 1 : 0.5,
                         child: InkWell(
                             onTap: () {
-                              provider.taggleShuffle();
+                              provider.toggleShuffle();
                             },
                             child: const Icon(
                               Icons.shuffle,
@@ -141,10 +142,11 @@ class TrackRow extends StatelessWidget {
                                   child: AlertDialog(
                                     title: Text(
                                         '${provider.instrument.name} Settings'),
-                                    content: provider.instrument ==
-                                            Instruments.tanpura
-                                        ? const TanpuraSettings()
-                                        : const TrackSettings(),
+                                    content: provider is SwarmandalTrack
+                                        ? const SwarmandalSettings()
+                                        : provider is TanpuraTrack
+                                            ? const TanpuraSettings()
+                                            : const TrackSettings(),
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () =>
@@ -189,16 +191,18 @@ class TrackRow extends StatelessWidget {
                     const VolumeBar(),
                     TrackPlayButton(
                         isTrackOn: provider.trackOptions.isTrackOn,
-                        onPlay: () {
+                        onPlay: () async {
                           if (!provider.trackOptions.isTrackOn) {
                             return;
                           }
-                          var futures = provider.play();
-                          if (futures.isNotEmpty) {
-                            for (var element in futures) {
-                              element();
-                            }
+                          // var futures = provider.play();
+                          var result = await provider.play();
+                          if (result) {
+                            // for (var element in futures) {
+                            //   element();
+                            // }
 
+                            // ignore: use_build_context_synchronously
                             context
                                 .read<GlobalTrackStatus>()
                                 .updateIsPlaying(true);
