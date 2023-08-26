@@ -4,7 +4,7 @@ class SwarmandalTrackOptions extends TrackOptions {
   const SwarmandalTrackOptions({
     this.useRandomInterval = false,
     this.randomIntervalsRange = const [5, 12],
-    this.interval = 3,
+    this.gaps = 3,
     super.volume = 1.0,
     super.isMute = false,
     super.isTrackOn = true,
@@ -14,14 +14,14 @@ class SwarmandalTrackOptions extends TrackOptions {
     super.pitch = TrackOptions.defaultPitch,
   });
   final bool useRandomInterval;
-  final List<int> randomIntervalsRange;
-  final int? interval;
+  final List<int?> randomIntervalsRange;
+  final int? gaps;
 
   SwarmandalTrackOptions deepCopy() {
     return SwarmandalTrackOptions(
       useRandomInterval: useRandomInterval,
       randomIntervalsRange: randomIntervalsRange,
-      interval: interval,
+      gaps: gaps,
       volume: volume,
       isMute: isMute,
       isTrackOn: isTrackOn,
@@ -34,8 +34,8 @@ class SwarmandalTrackOptions extends TrackOptions {
 
   SwarmandalTrackOptions copyWith({
     bool? useRandomInterval,
-    List<int>? randomIntervalsRange,
-    int? interval,
+    List<int?>? randomIntervalsRange,
+    int? gaps,
     double? volume,
     bool? isMute,
     bool? isTrackOn,
@@ -47,7 +47,7 @@ class SwarmandalTrackOptions extends TrackOptions {
     return SwarmandalTrackOptions(
       useRandomInterval: useRandomInterval ?? this.useRandomInterval,
       randomIntervalsRange: randomIntervalsRange ?? this.randomIntervalsRange,
-      interval: interval ?? this.interval,
+      gaps: gaps ?? this.gaps,
       volume: volume ?? this.volume,
       isMute: isMute ?? this.isMute,
       isTrackOn: isTrackOn ?? this.isTrackOn,

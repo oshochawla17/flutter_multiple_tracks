@@ -175,9 +175,7 @@ class TablaPakhawajTrack with ChangeNotifier implements InstrumentTrack {
         var index = notesRange.indexOf(globalOptions.note);
         semitonesDifference += (index - originalIndex).toDouble();
       }
-      print('semitones difference: $semitonesDifference');
       var pitchFactor = AudioHelper.semitonesToPitchFactor(semitonesDifference);
-      print('setting pitch to $pitchFactor');
       await _playlist.player.setPitch(pitchFactor);
       await _playlist.player.setRate(globalOptions.tempo / originalTempo);
     }

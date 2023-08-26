@@ -12,7 +12,7 @@ class MasterPlayButton extends StatelessWidget {
     return Consumer2<GlobalTrackStatus, InstrumentsPlayingStatusProvider>(
         builder: (context, provider, playStatus, child) {
       bool isPlaying = playStatus.isPlaying();
-      print('MasterPlayButton build');
+
       return ElevatedButton(
         onPressed: () {
           isPlaying ? provider.stop() : provider.play();

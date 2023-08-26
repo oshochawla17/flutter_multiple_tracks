@@ -20,7 +20,7 @@ class SwarmandalSection extends InstrumentsSection {
       return Card(
         elevation: 2,
         child: Container(
-            height: 140,
+            height: 145,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.5),
               borderRadius: BorderRadius.circular(10),
@@ -62,7 +62,7 @@ class SwarmandalSection extends InstrumentsSection {
                                 ],
                                 child: AlertDialog(
                                   title: Text(
-                                      '${instrument.instrument.name} Settings'),
+                                      '${instrument.instrument.instrumentName()} Settings'),
                                   content: const SwarmandalSettings(),
                                   actions: <Widget>[
                                     TextButton(

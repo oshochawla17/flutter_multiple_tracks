@@ -18,4 +18,21 @@ extension InstrumentsExt on Instruments {
         return 'assets/images/instruments/METRONOME.png';
     }
   }
+
+  String instrumentName() {
+    switch (this) {
+      case Instruments.tabla:
+        return 'Tabla';
+      case Instruments.pakhawaj:
+        return 'Pakhawaj';
+      case Instruments.swarmandal:
+        return 'Swarmandal';
+      case Instruments.tanpura1:
+        return 'Tanpura 1';
+      case Instruments.tanpura2:
+        return 'Tanpura 2';
+      case Instruments.metronome:
+        return 'Metronome';
+    }
+  }
 }

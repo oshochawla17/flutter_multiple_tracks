@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments.dart';
@@ -49,15 +50,6 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
 
   @override
   Future<bool> play() async {
-    // List<Future<void> Function()> futures = [];
-    // updateFromGlobal(null).then((value) {
-    //   _playlist.player.play();
-    // });
-    // for (var playlist in playlists) {
-    //   if (playlist.selectedFiles.isEmpty) continue;
-    //   futures.add(playlist.player.play);
-    // }
-    // return futures;
     var resullt = await updateFromGlobal(null);
     if (!resullt) {
       isPlaying = false;
@@ -77,6 +69,23 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
     return true;
   }
 
+  int calculateTime() {
+    var options = trackOptions as SwarmandalTrackOptions;
+    if (options.useRandomInterval &&
+        options.randomIntervalsRange.length == 2 &&
+        options.randomIntervalsRange[0] != null &&
+        options.randomIntervalsRange[1] != null &&
+        options.randomIntervalsRange[1]! >= options.randomIntervalsRange[0]!) {
+      var random = Random();
+      var randomIntervalsRange = options.randomIntervalsRange;
+      var randomIntervals = randomIntervalsRange[0]! +
+          random.nextInt(randomIntervalsRange[1]! - randomIntervalsRange[0]!);
+      return randomIntervals * 1000;
+    } else {
+      return (options.gaps ?? 3) * 1000;
+    }
+  }
+
   int index = 0;
   @override
   void load(InstrumentLibrary library) {
@@ -91,7 +100,7 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
       if (event) {
         timer?.cancel();
         await _playlist.player.pause();
-        timer = Timer(Duration(milliseconds: 1500), () async {
+        timer = Timer(Duration(milliseconds: calculateTime()), () async {
           _playlist.files.removeAt(0);
           if (_playlist.files.isEmpty) {
             isPlaying = false;

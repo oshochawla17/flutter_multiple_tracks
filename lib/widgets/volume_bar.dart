@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_multiple_tracks/services/models/instruments.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:provider/provider.dart';
 
@@ -12,40 +13,25 @@ class VolumeBar extends StatelessWidget {
         data: SliderThemeData(
           overlayShape: SliderComponentShape.noOverlay,
         ),
-        child: Row(
+        child: Column(
           children: [
-            InkWell(
-              child: Icon(
-                  provider.trackOptions.isMute
-                      ? Icons.volume_off
-                      : Icons.volume_down,
-                  color: provider.trackOptions.isMute
-                      ? Colors.grey.withOpacity(0.5)
-                      : Colors.grey),
-              onTap: () {
-                provider.trackOptions.isMute
-                    ? context.read<InstrumentTrack>().unmute()
-                    : context.read<InstrumentTrack>().mute();
-              },
-            ),
-            Slider(
-              value: provider.trackOptions.volume,
-              max: 1.00,
-              min: 0.00,
-              onChanged: (double value) {
-                context.read<InstrumentTrack>().setVolume(value);
-              },
-            ),
-            InkWell(
-              child: Icon(
-                Icons.volume_up,
-                color: provider.trackOptions.volume == 1
-                    ? Colors.blue
-                    : Colors.grey.withOpacity(0.7),
+            RotatedBox(
+              quarterTurns: 3,
+              child: Slider(
+                value: provider.trackOptions.volume,
+                max: 1.00,
+                min: 0.00,
+                onChanged: (double value) {
+                  context.read<InstrumentTrack>().setVolume(value);
+                },
               ),
-              onTap: () {
-                context.read<InstrumentTrack>().setVolume(1);
-              },
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Text(
+              provider.instrument.instrumentName(),
+              style: const TextStyle(fontSize: 13),
             ),
           ],
         ),

@@ -69,7 +69,6 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
     if (lock) return false;
     lock = true;
     var beforePlaying = isPlaying;
-    print('changing tempo to $tempo');
     timer?.cancel();
     for (var playlist in _playlists) {
       await stopPlaylist(playlist);
@@ -139,24 +138,6 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
       return false;
     }
     return true;
-    // for (int index = 0; index < playlists.length; index++) {
-    //   var playlist = playlists[index];
-    //   if (stopPlaying) {
-    //     stopPlaying = false;
-    //     return;
-    //   }
-    //   restartPlaylist(playlist);
-    //   if (index < playlists.length - 1) {
-    //     print(
-    //         'waiting for $milliseconds milliseconds after playlist: ${index + 1}');
-
-    //     await Future.delayed(Duration(milliseconds: milliseconds));
-    //   }
-    // }
-    // print('waiting for ${milliseconds * 2} milliseconds after playlist: 4');
-
-    // await Future.delayed(Duration(milliseconds: 2 * milliseconds));
-    // playTracksWithDelay();
   }
 
   bool stopPlaying = false;
@@ -191,12 +172,6 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   @override
   void load(InstrumentLibrary library) {
     this.library = library as TanpuraLibrary;
-
-    // playlists[0].player.stream.playing.listen((event) {
-    //   isPlaying = event;
-    //   print('setting isPlaying to $event');
-    //   notifyListeners();
-    // });
   }
 
   @override

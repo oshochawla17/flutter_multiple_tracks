@@ -58,8 +58,7 @@ class TrackPlayButton extends StatelessWidget {
                     width: 30,
                   ),
                   Text(
-                    provider.instrument.name[0].toUpperCase() +
-                        provider.instrument.name.substring(1),
+                    provider.instrument.instrumentName(),
                     style: const TextStyle(
                       fontSize: 14,
                     ),

@@ -7,6 +7,7 @@ import 'package:flutter_multiple_tracks/widgets/audio_directory.dart';
 import 'package:flutter_multiple_tracks/widgets/clickable_text.dart';
 import 'package:flutter_multiple_tracks/widgets/master_play_button.dart';
 import 'package:flutter_multiple_tracks/widgets/scale_selector.dart';
+import 'package:flutter_multiple_tracks/widgets/volume_mixer.dart';
 import 'package:provider/provider.dart';
 
 class MasterRow extends StatelessWidget {
@@ -25,7 +26,37 @@ class MasterRow extends StatelessWidget {
             borderRadius: BorderRadius.circular(5),
           ),
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                builder: (BuildContext builderContext) {
+                  final trackOptionsProvider =
+                      context.read<GlobalTrackStatus>();
+                  return SingleChildScrollView(
+                    child: ChangeNotifierProvider<GlobalTrackStatus>.value(
+                      value: trackOptionsProvider,
+                      child: const VolumeMixer(),
+                    ),
+                  );
+                },
+              );
+              // showDialog<void>(
+              //   context: context,
+              //   barrierDismissible: true,
+              //   barrierLabel: "",
+              //   builder: (BuildContext builderContext) {
+              //     final trackOptionsProvider =
+              //         context.read<GlobalTrackStatus>();
+              //     return SingleChildScrollView(
+              //       child: ChangeNotifierProvider<GlobalTrackStatus>.value(
+              //         value: trackOptionsProvider,
+              //         child: const VolumeMixer(),
+              //       ),
+              //     );
+              //   },
+              // );
+            },
             child: const Icon(Icons.tune),
           ),
         ),
