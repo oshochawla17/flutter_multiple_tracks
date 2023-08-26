@@ -110,6 +110,7 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
 
   Timer? timer;
   Future<bool> playTracksWithDelay() async {
+    if (library?.files.isEmpty ?? true) return false;
     int milliseconds = 60000 ~/ trackOptions.tempo!;
     bool play = await restartPlaylist(playlists[0]);
     if (!play) return false;
@@ -169,11 +170,11 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   Future<bool> restartPlaylist(TrackPlaylist playlist) async {
     if (stopPlaying) return false;
     if (playlist.player.state.playing) {
-      await playlist.resetPlaylist();
+      return playlist.resetPlaylist();
     } else {
       await playlist.player.play();
+      return true;
     }
-    return true;
   }
 
   @override

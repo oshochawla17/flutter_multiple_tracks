@@ -66,14 +66,14 @@ class TrackPlaylist {
     files = filesCopy;
   }
 
-  Future<void> resetPlaylist() async {
+  Future<bool> resetPlaylist() async {
     var files = selectedFiles();
     if (isShuffle) {
       files.shuffle();
     }
     if (selectedFiles().isEmpty) {
       await player.stop();
-      return;
+      return false;
     }
     await player.stop();
     await player.open(
@@ -83,7 +83,7 @@ class TrackPlaylist {
               ))
         ]),
         play: player.state.playing);
-    return;
+    return true;
   }
 
   Future<bool> selectFile(InstrumentFile file) async {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_multiple_tracks/services/models/instruments.dart';
+import 'package:flutter_multiple_tracks/services/providers/global_track_status.dart';
 import 'package:flutter_multiple_tracks/services/providers/instruments_playing_status_provider.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:provider/provider.dart';
@@ -6,42 +8,64 @@ import 'package:provider/provider.dart';
 class TrackPlayButton extends StatelessWidget {
   const TrackPlayButton({
     Key? key,
-    required this.onPlay,
-    required this.onStop,
-    required this.isTrackOn,
   }) : super(key: key);
-  final Function onPlay;
-  final Function onStop;
-  final bool isTrackOn;
   @override
   Widget build(BuildContext context) {
     return Consumer<InstrumentTrack>(
       builder: (context, provider, child) {
-        print('selector isPlaying: $provider ');
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           Provider.of<InstrumentsPlayingStatusProvider>(context, listen: false)
               .updateInstrumentStatus(provider.instrument, provider.isPlaying);
         });
 
-        return ElevatedButton(
-          onPressed: !isTrackOn
-              ? null
-              : () {
-                  provider.isPlaying ? onStop() : onPlay();
-                },
-          style: ElevatedButton.styleFrom(
-            shape: const CircleBorder(),
-            padding: const EdgeInsets.all(15),
-            backgroundColor: provider.isPlaying
-                ? Colors.red
-                : Colors.lightGreen, // <-- Button color
-            foregroundColor: Colors.black, // <-- Splash color
-          ),
-          child: Center(
-            child: Icon(
-              provider.isPlaying ? Icons.stop : Icons.play_arrow,
-            ),
-          ),
+        return Container(
+          child: ElevatedButton(
+              onPressed: !provider.isPlaying
+                  ? () async {
+                      var result = await provider.play();
+                      if (result) {
+                        // ignore: use_build_context_synchronously
+                        context.read<GlobalTrackStatus>().updateIsPlaying(true);
+                      }
+                    }
+                  : () async {
+                      await provider.stop();
+
+                      var globalTrackStatus =
+                          // ignore: use_build_context_synchronously
+                          context.read<GlobalTrackStatus>();
+                      for (InstrumentTrack instrument
+                          in globalTrackStatus.instruments) {
+                        if (instrument.isPlaying) {
+                          return;
+                        }
+                      }
+                      globalTrackStatus.updateIsPlaying(false);
+                    },
+              style: ElevatedButton.styleFrom(
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                backgroundColor:
+                    provider.isPlaying ? Colors.lightBlue : Colors.white,
+                foregroundColor: Colors.black,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Image.asset(
+                    provider.instrument.imagePath(),
+                    height: 30,
+                    width: 30,
+                  ),
+                  Text(
+                    provider.instrument.name[0].toUpperCase() +
+                        provider.instrument.name.substring(1),
+                    style: const TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              )),
         );
       },
     );

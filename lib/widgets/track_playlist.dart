@@ -77,42 +77,6 @@ class _TrackPlaylistComponentState extends State<TrackPlaylistComponent> {
             ),
           ],
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              'Playlist ${widget.index + 1}',
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: SizedBox(
-                height: 70,
-                child: ListView.builder(
-                    itemCount:
-                        widget.playlist.player.state.playlist.medias.length,
-                    physics: const ClampingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          InkWell(
-                            child: const Icon(
-                              Icons.remove_circle,
-                              size: 30,
-                            ),
-                            onTap: () {},
-                          ),
-                          const SizedBox(width: 10),
-                          Text(widget.playlist.files[index].name),
-                        ],
-                      );
-                    }),
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }

@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_track_status.dart';
 import 'package:flutter_multiple_tracks/services/providers/instruments_playing_status_provider.dart';
+import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/library_provider.dart';
 import 'package:flutter_multiple_tracks/widgets/audio_directory.dart';
+import 'package:flutter_multiple_tracks/widgets/instuments_section/instruments_sections.dart';
 import 'package:flutter_multiple_tracks/widgets/master_row.dart';
-import 'package:flutter_multiple_tracks/widgets/track_row.dart';
+import 'package:flutter_multiple_tracks/widgets/scale_tuner.dart';
+import 'package:flutter_multiple_tracks/widgets/tempo_tuner.dart';
 import 'package:provider/provider.dart';
 
 class SoundBlendHome extends StatelessWidget {
@@ -18,8 +21,7 @@ class SoundBlendHome extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        // title: const Text('Sound Blend'),
-        title: Container(),
+        title: const Text('Saath Studio'),
       ),
       body: MultiProvider(
         providers: [
@@ -29,52 +31,80 @@ class SoundBlendHome extends StatelessWidget {
           ChangeNotifierProvider<GlobalTrackStatus>(
             create: (context) => GlobalTrackStatus(),
           ),
-          ChangeNotifierProvider<LibraryProvider>(
-            create: (context) => LibraryProvider(),
-          ),
+          // ChangeNotifierProvider<LibraryProvider>(
+          //   create: (context) => LibraryProvider(),
+          // ),
           ChangeNotifierProvider<InstrumentsPlayingStatusProvider>(
             create: (context) => InstrumentsPlayingStatusProvider(),
           ),
         ],
-        child: Column(
-          children: [
-            const AudioDirectoryLoader(),
-            const Text(
-              'Sound Blend',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
+        child: SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: ListView(
+            physics: const ClampingScrollPhysics(),
+            shrinkWrap: true,
+            children: [
+              // const AudioDirectoryLoader(),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5),
+                child: Row(
+                  children: [
+                    Expanded(child: ScaleTuner()),
+                    Expanded(child: TempoTuner()),
+                  ],
+                ),
               ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(10),
-              child: MasterRow(),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(0),
-              child: Divider(),
-            ),
-            Expanded(
-              child: Padding(
+              const SizedBox(
+                height: 10,
+              ),
+              const MasterRow(),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Builder(builder: (context) {
                   var instrumentsProvider = context.read<GlobalTrackStatus>();
-                  return ListView.builder(
-                    itemCount: instrumentsProvider.instruments.length,
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    physics: const ClampingScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return ChangeNotifierProvider.value(
-                          value: instrumentsProvider.instruments[index],
-                          child: TrackRow(index: index));
-                    },
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      ...List.generate(
+                        instrumentsProvider.instruments.length ~/ 2,
+                        (index) {
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: ChangeNotifierProvider<
+                                    InstrumentTrack>.value(
+                                  value: instrumentsProvider
+                                      .instruments[index * 2],
+                                  child: InstrumentsSection(
+                                      instrument: instrumentsProvider
+                                          .instruments[index * 2].instrument),
+                                ),
+                              ),
+                              Expanded(
+                                child: ChangeNotifierProvider<
+                                    InstrumentTrack>.value(
+                                  value: instrumentsProvider
+                                      .instruments[index * 2 + 1],
+                                  child: InstrumentsSection(
+                                      instrument: instrumentsProvider
+                                          .instruments[index * 2 + 1]
+                                          .instrument),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
                   );
                 }),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

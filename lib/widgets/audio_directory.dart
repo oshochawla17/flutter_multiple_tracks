@@ -27,9 +27,9 @@ class _AudioDirectoryLoaderState extends State<AudioDirectoryLoader> {
         if (snapshot.connectionState == ConnectionState.done) {
           updateLibrary() => FileParser.traverseDirectory(directorySelected!)
                   .then((libraries) {
-                var libraryProvider = context.read<LibraryProvider>();
+                // var libraryProvider = context.read<LibraryProvider>();
 
-                libraryProvider.updateLibrary(libraries);
+                // libraryProvider.updateLibrary(libraries);
                 TablaPakhawajLibrary tablaLib =
                     (libraries[Instruments.tabla]! as TablaPakhawajLibrary);
                 String? selectedTaal;
@@ -56,27 +56,26 @@ class _AudioDirectoryLoaderState extends State<AudioDirectoryLoader> {
           if (snapshot.hasData) {
             directorySelected = snapshot.data.toString();
             updateLibrary();
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Currrent directory selected:'),
-                    Text(directorySelected!,
-                        style: const TextStyle(fontSize: 10)),
-                  ],
-                ),
-                ElevatedButton(
-                  onPressed: onSelected,
-                  child: const Text('Select another directory'),
+                // Text(
+                //   directorySelected!.substring(10),
+                //   overflow: TextOverflow.ellipsis,
+                //   style: const TextStyle(fontSize: 10),
+                //   maxLines: null,
+                // ),
+                InkWell(
+                  onTap: onSelected,
+                  child: const Icon(Icons.queue_music),
                 ),
               ],
             );
           } else {
-            return ElevatedButton(
-              onPressed: onSelected,
-              child: const Text('Select root directory'),
+            return InkWell(
+              onTap: onSelected,
+              child: const Icon(Icons.queue_music),
             );
           }
         } else {

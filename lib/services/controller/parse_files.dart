@@ -13,6 +13,7 @@ import 'package:flutter_multiple_tracks/services/models/instruments_library/tabl
 import 'package:flutter_multiple_tracks/services/models/instruments_library/tanpura_library.dart';
 import 'package:flutter_multiple_tracks/services/models/music_scales.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class FileParser {
   static Future<String?> currentRootDirectory() async {
@@ -175,7 +176,17 @@ class FileParser {
   static Future<Map<Instruments, InstrumentLibrary>> traverseDirectory(
       String rootPath) async {
     var uri = Uri.parse(rootPath);
+    // var permission = await Permission.storage.request();
+    // if (permission.isGranted) {
+    //   print('Permission granted');
+    // } else {
+    //   print('Permission denied');
+    // }
+    var systemTempDir1 = Directory.systemTemp;
+    print(systemTempDir1.path);
+
     var systemTempDir = Directory.fromUri(uri);
+    // await systemTempDir.createTemp('flutter_temp');
 
     List<String> totalFiles = [];
     await for (var entity

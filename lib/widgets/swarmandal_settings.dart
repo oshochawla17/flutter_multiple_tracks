@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_multiple_tracks/services/models/swarmandal_track_options.dart';
-import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:provider/provider.dart';
 
@@ -13,10 +12,6 @@ class SwarmandalSettings extends StatefulWidget {
 }
 
 class _SwarmandalSettingsState extends State<SwarmandalSettings> {
-  // bool isTrackOn = true;
-  // bool useGlobalPitch = true;
-  // late int? pitch;
-
   late SwarmandalTrackOptions trackOptions;
   @override
   void initState() {

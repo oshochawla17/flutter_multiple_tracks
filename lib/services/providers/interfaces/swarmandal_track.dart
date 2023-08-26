@@ -226,7 +226,7 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
     return false;
   }
 
-  Future<bool> taggleShuffle() async {
+  Future<bool> toggleShuffle() async {
     isShuffle = !isShuffle;
     await _playlist.player.setShuffle(isShuffle);
     _playlist.isShuffle = isShuffle;

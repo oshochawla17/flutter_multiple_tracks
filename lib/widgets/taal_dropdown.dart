@@ -13,30 +13,36 @@ class TaalDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<InstrumentTrack>(builder: (context, provider, child) {
       var tablaProvider = provider as TablaPakhawajTrack;
-      return DropdownButton<String>(
-        value: tablaProvider.selectedTaal,
-        elevation: 16,
-        style: const TextStyle(color: Colors.deepPurple),
-        onChanged: (String? value) {
-          // This is called when the user selects an item.
-          var globalOptionsProvider = context.read<GlobalOptionsProvider>();
-          var globalTrackStatus = context.read<GlobalTrackStatus>();
-          tablaProvider.selectTaal(
-              taal: value!, globalOptions: globalOptionsProvider.options);
+      return Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: const EdgeInsets.all(5),
+        child: DropdownButton<String>(
+          value: tablaProvider.selectedTaal,
+          style: const TextStyle(color: Colors.deepPurple),
+          onChanged: (String? value) {
+            var globalOptionsProvider = context.read<GlobalOptionsProvider>();
+            var globalTrackStatus = context.read<GlobalTrackStatus>();
+            tablaProvider.selectTaal(
+                taal: value!, globalOptions: globalOptionsProvider.options);
 
-          globalOptionsProvider.updateOptions(
-            globalOptionsProvider.options.copyWith(selectedTaal: value),
-          );
-          globalTrackStatus.updateTaal(globalOptionsProvider.options);
-        },
-        items: (tablaProvider.library?.taalFiles ?? {})
-            .keys
-            .map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
+            globalOptionsProvider.updateOptions(
+              globalOptionsProvider.options.copyWith(selectedTaal: value),
+            );
+            globalTrackStatus.updateTaal(globalOptionsProvider.options);
+          },
+          items: (tablaProvider.library?.taalFiles ?? {})
+              .keys
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Center(child: Text(value, textAlign: TextAlign.center)),
+            );
+          }).toList(),
+        ),
       );
     });
   }

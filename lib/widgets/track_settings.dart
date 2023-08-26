@@ -5,15 +5,15 @@ import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument
 import 'package:flutter_multiple_tracks/widgets/clickable_text.dart';
 import 'package:provider/provider.dart';
 
-class TrackSettings extends StatefulWidget {
-  const TrackSettings({
+class TablaPakhawajSettings extends StatefulWidget {
+  const TablaPakhawajSettings({
     super.key,
   });
   @override
-  State<TrackSettings> createState() => _TrackSettingsState();
+  State<TablaPakhawajSettings> createState() => _TablaPakhawajSettingsState();
 }
 
-class _TrackSettingsState extends State<TrackSettings> {
+class _TablaPakhawajSettingsState extends State<TablaPakhawajSettings> {
   bool isTrackOn = true;
   bool useGlobalPitch = true;
   bool useGlobalTempo = true;

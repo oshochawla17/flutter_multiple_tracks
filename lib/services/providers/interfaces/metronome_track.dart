@@ -7,7 +7,6 @@ import 'package:flutter_multiple_tracks/services/models/sound_blend_global_optio
 import 'package:flutter_multiple_tracks/services/models/track_options.dart';
 import 'package:flutter_multiple_tracks/services/providers/interfaces/instrument_track.dart';
 import 'package:flutter_multiple_tracks/services/providers/playlist_provider.dart';
-import 'package:flutter_multiple_tracks/utils/helper.dart';
 
 class MetronomeTrack with ChangeNotifier implements InstrumentTrack {
   MetronomeTrack({

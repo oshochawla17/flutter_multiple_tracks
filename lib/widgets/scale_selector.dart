@@ -25,9 +25,10 @@ class ScaleSelector extends StatelessWidget {
                 context.read<GlobalTrackStatus>().updateScale(newOptions);
               },
               child: const Center(child: Icon(Icons.remove))),
-          const SizedBox(width: 10),
+          const SizedBox(width: 1),
           Container(
-            width: 100,
+            width: 50,
+            height: 50,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black),
               borderRadius: BorderRadius.circular(5),
@@ -42,7 +43,7 @@ class ScaleSelector extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 1),
           InkWell(
               onTap: () {
                 var newNote = MusicNote.values[

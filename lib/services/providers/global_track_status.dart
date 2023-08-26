@@ -18,8 +18,8 @@ class GlobalTrackStatus extends ChangeNotifier {
     TanpuraTrack(instrument: Instruments.tanpura2),
     TablaPakhawajTrack.tabla(),
     TablaPakhawajTrack.pakhawaj(),
-    MetronomeTrack(),
     SwarmandalTrack(),
+    MetronomeTrack(),
   ];
   void load(Map<Instruments, InstrumentLibrary> libraries) {
     for (var instrument in instruments) {
