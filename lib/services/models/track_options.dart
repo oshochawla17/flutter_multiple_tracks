@@ -24,7 +24,7 @@ class TrackOptions extends Equatable {
   static const MusicNote defaultNote = MusicNote.E;
   static const int minPitch = -99;
   static const int maxPitch = 99;
-  static const int defaultTempo = 60;
+  static const int defaultTempo = 120;
   static const int minTempo = 15;
   static const int maxTempo = 500;
 

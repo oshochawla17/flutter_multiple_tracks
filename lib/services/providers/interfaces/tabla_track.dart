@@ -39,9 +39,6 @@ class TablaPakhawajTrack with ChangeNotifier implements InstrumentTrack {
   bool isShuffle = false;
 
   @override
-  TablaPakhawajFile? currentPlaying;
-
-  @override
   bool isPlaying = false;
 
   @override
@@ -98,19 +95,11 @@ class TablaPakhawajTrack with ChangeNotifier implements InstrumentTrack {
     }
 
     _playlist.player.stream.playing.listen((event) {
-      isPlaying = event;
-
-      notifyListeners();
-    });
-    _playlist.player.stream.playlist.listen((event) {
-      if (event.medias.isNotEmpty) {
-        currentPlaying = _playlist.files.firstWhere(
-                (element) => element.path == event.medias[event.index].uri)
-            as TablaPakhawajFile;
+      if (isPlaying != event) {
+        isPlaying = event;
 
         notifyListeners();
       }
-      // notifyListeners();
     });
   }
 

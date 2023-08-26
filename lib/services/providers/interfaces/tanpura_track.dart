@@ -13,13 +13,13 @@ import 'package:flutter_multiple_tracks/utils/helper.dart';
 class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   TanpuraTrack(
       {this.trackOptions = const TrackOptions(
-        isTrackOn: false,
+        isTrackOn: true,
         useGlobalPitch: true,
         useGlobalTempo: false,
         volume: 1.0,
         isMute: false,
         pitch: TrackOptions.defaultPitch,
-        tempo: TrackOptions.defaultTempo,
+        tempo: 90,
       ),
       required this.instrument});
 
@@ -37,9 +37,6 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   String? selectedSub;
 
   bool isShuffle = false;
-
-  @override
-  TanpuraFile? currentPlaying;
 
   @override
   bool isPlaying = false;
@@ -98,19 +95,11 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
     }
 
     _playlist.player.stream.playing.listen((event) {
-      isPlaying = event;
-
-      notifyListeners();
-    });
-    _playlist.player.stream.playlist.listen((event) {
-      if (event.medias.isNotEmpty) {
-        currentPlaying = _playlist.files.firstWhere(
-                (element) => element.path == event.medias[event.index].uri)
-            as TanpuraFile;
+      if (isPlaying != event) {
+        isPlaying = event;
 
         notifyListeners();
       }
-      // notifyListeners();
     });
   }
 

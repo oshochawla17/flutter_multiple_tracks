@@ -27,9 +27,6 @@ class MetronomeTrack with ChangeNotifier implements InstrumentTrack {
   MetronomeLibrary? library;
 
   @override
-  MetronomeFile? currentPlaying;
-
-  @override
   bool isPlaying = false;
 
   @override
@@ -74,14 +71,9 @@ class MetronomeTrack with ChangeNotifier implements InstrumentTrack {
     this.library = library as MetronomeLibrary;
 
     _playlist.player.stream.playing.listen((event) {
-      isPlaying = event;
-      notifyListeners();
-    });
-    _playlist.player.stream.playlist.listen((event) {
-      if (event.medias.isNotEmpty) {
-        currentPlaying = _playlist.files.firstWhere(
-                (element) => element.path == event.medias[event.index].uri)
-            as MetronomeFile;
+      if (isPlaying != event) {
+        isPlaying = event;
+
         notifyListeners();
       }
     });

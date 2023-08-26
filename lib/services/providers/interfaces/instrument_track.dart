@@ -25,6 +25,4 @@ abstract class InstrumentTrack with ChangeNotifier {
   void load(InstrumentLibrary library);
   Future<void> resetPlaylist();
   Future<bool> setPitch(int cents, SoundBlendGlobalOptions globalOptions);
-
-  InstrumentFile? get currentPlaying;
 }

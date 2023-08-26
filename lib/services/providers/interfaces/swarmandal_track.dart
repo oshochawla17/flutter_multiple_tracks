@@ -29,9 +29,6 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
   bool isShuffle = false;
 
   @override
-  SwarmandalFile? currentPlaying;
-
-  @override
   bool isPlaying = false;
 
   @override
@@ -88,21 +85,20 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
     }
   }
 
-  int index = 0;
   @override
   void load(InstrumentLibrary library) {
     this.library = library as SwarmandalLibrary;
     if (library.raagFiles.isNotEmpty) {
       selectedRaag = library.raagFiles.keys.first;
     }
-    _playlist.player.stream.playlist.listen((event) {
-      index = event.index;
-    });
+
     _playlist.player.stream.completed.listen((event) async {
       if (event) {
         timer?.cancel();
         await _playlist.player.pause();
-        timer = Timer(Duration(milliseconds: calculateTime()), () async {
+        var milliseconds = calculateTime();
+        print('milliseconds: $milliseconds');
+        timer = Timer(Duration(milliseconds: milliseconds), () async {
           _playlist.files.removeAt(0);
           if (_playlist.files.isEmpty) {
             isPlaying = false;
@@ -117,14 +113,8 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
       }
     });
     _playlist.player.stream.playing.listen((event) {
-      isPlaying = event;
-      notifyListeners();
-    });
-    _playlist.player.stream.playlist.listen((event) {
-      if (event.medias.isNotEmpty) {
-        currentPlaying = _playlist.files.firstWhere(
-                (element) => element.path == event.medias[event.index].uri)
-            as SwarmandalFile;
+      if (isPlaying != event) {
+        isPlaying = event;
 
         notifyListeners();
       }

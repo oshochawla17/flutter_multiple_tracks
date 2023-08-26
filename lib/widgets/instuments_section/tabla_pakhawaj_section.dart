@@ -18,6 +18,7 @@ class TablaPakhawajSection extends InstrumentsSection {
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
       return Consumer<InstrumentTrack>(builder: (context, instrument, child) {
+        print('TablaPakhawajSection build');
         return Card(
           elevation: 2,
           child: Container(

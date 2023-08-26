@@ -51,8 +51,8 @@ class SoundBlendHome extends StatelessWidget {
                 child: Row(
                   children: [
                     const Expanded(child: ScaleTuner()),
-                    Consumer<GlobalOptionsProvider>(
-                        builder: (context, provider, child) {
+                    Consumer2<GlobalOptionsProvider, GlobalTrackStatus>(
+                        builder: (context, provider, trackStatus, child) {
                       return Expanded(
                         child: TempoTuner(
                           onTempoChange: (int newVal) {
@@ -61,9 +61,11 @@ class SoundBlendHome extends StatelessWidget {
                             } else if (newVal < TrackOptions.minTempo) {
                               newVal = TrackOptions.minTempo;
                             }
-
-                            provider.updateOptions(
-                                provider.options.copyWith(tempo: newVal));
+                            var newOptions = provider.options.copyWith(
+                              tempo: newVal,
+                            );
+                            provider.updateOptions(newOptions);
+                            trackStatus.setTempo(newOptions);
                           },
                         ),
                       );
