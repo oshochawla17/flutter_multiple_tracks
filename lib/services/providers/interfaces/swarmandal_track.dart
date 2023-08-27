@@ -20,7 +20,7 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
     this.trackOptions = const SwarmandalTrackOptions(),
   });
 
-  final TrackPlaylist _playlist = TrackPlaylist(useLoop: false);
+  final TrackPlaylist _playlist = TrackPlaylist(useLoop: true);
 
   SwarmandalLibrary? library;
 
@@ -101,7 +101,10 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
         var milliseconds = calculateTime();
         print('milliseconds: $milliseconds');
         timer = Timer(Duration(milliseconds: milliseconds), () async {
+          if (playlists.first.files.isEmpty) return;
+          var firstFile = _playlist.files.first;
           _playlist.files.removeAt(0);
+          _playlist.files.add(firstFile);
           if (_playlist.files.isEmpty) {
             isPlaying = false;
             _playlist.player.stop();
