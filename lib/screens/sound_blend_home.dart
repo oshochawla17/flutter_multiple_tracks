@@ -32,12 +32,6 @@ class SoundBlendHome extends StatelessWidget {
           ChangeNotifierProvider<GlobalTrackStatus>(
             create: (context) => GlobalTrackStatus(),
           ),
-          // ChangeNotifierProvider<LibraryProvider>(
-          //   create: (context) => LibraryProvider(),
-          // ),
-          // ChangeNotifierProvider<InstrumentsPlayingStatusProvider>(
-          //   create: (context) => InstrumentsPlayingStatusProvider(),
-          // ),
         ],
         child: SingleChildScrollView(
           physics: const ClampingScrollPhysics(),
@@ -46,30 +40,14 @@ class SoundBlendHome extends StatelessWidget {
             shrinkWrap: true,
             children: [
               // const AudioDirectoryLoader(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5),
                 child: Row(
                   children: [
-                    const Expanded(child: ScaleTuner()),
-                    Consumer2<GlobalOptionsProvider, GlobalTrackStatus>(
-                        builder: (context, provider, trackStatus, child) {
-                      return Expanded(
-                        child: TempoTuner(
-                          onTempoChange: (int newVal) {
-                            if (newVal > TrackOptions.maxTempo) {
-                              newVal = TrackOptions.maxTempo;
-                            } else if (newVal < TrackOptions.minTempo) {
-                              newVal = TrackOptions.minTempo;
-                            }
-                            var newOptions = provider.options.copyWith(
-                              tempo: newVal,
-                            );
-                            provider.updateOptions(newOptions);
-                            trackStatus.setTempo(newOptions);
-                          },
-                        ),
-                      );
-                    }),
+                    Expanded(child: ScaleTuner()),
+                    Expanded(
+                      child: TempoTuner(),
+                    ),
                   ],
                 ),
               ),

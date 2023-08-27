@@ -1,19 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_multiple_tracks/services/models/track_options.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
+import 'package:flutter_multiple_tracks/services/providers/global_track_status.dart';
 import 'package:flutter_multiple_tracks/widgets/clickable_text.dart';
 import 'package:provider/provider.dart';
 
 class TempoTuner extends StatelessWidget {
   const TempoTuner({
     super.key,
-    required this.onTempoChange,
   });
-  final Function(
-    int,
-  ) onTempoChange;
+
   @override
   Widget build(BuildContext context) {
+    onTempoChange(int newVal) {
+      if (newVal > TrackOptions.maxTempo) {
+        newVal = TrackOptions.maxTempo;
+      } else if (newVal < TrackOptions.minTempo) {
+        newVal = TrackOptions.minTempo;
+      }
+      var provider = context.read<GlobalOptionsProvider>();
+      var trackStatus = context.read<GlobalTrackStatus>();
+      var newOptions = provider.options.copyWith(
+        tempo: newVal,
+      );
+      provider.updateOptions(newOptions);
+      trackStatus.setTempo(newOptions);
+    }
+
     return Consumer<GlobalOptionsProvider>(builder: (context, provider, child) {
       return SliderTheme(
         data: SliderThemeData(overlayShape: SliderComponentShape.noOverlay),
