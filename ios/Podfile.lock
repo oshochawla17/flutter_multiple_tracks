@@ -1,6 +1,4 @@
 PODS:
-  - audio_session (0.0.1):
-    - Flutter
   - DKImagePickerController/Core (4.3.4):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
@@ -36,7 +34,10 @@ PODS:
     - DKImagePickerController/PhotoGallery
     - Flutter
   - Flutter (1.0.0)
-  - just_audio (0.0.1):
+  - flutter_archive (0.0.1):
+    - Flutter
+    - ZIPFoundation (= 0.9.13)
+  - flutter_downloader (0.0.1):
     - Flutter
   - media_kit_libs_ios_audio (1.0.4):
     - Flutter
@@ -54,12 +55,13 @@ PODS:
     - Flutter
     - FlutterMacOS
   - SwiftyGif (5.4.4)
+  - ZIPFoundation (0.9.13)
 
 DEPENDENCIES:
-  - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
-  - just_audio (from `.symlinks/plugins/just_audio/ios`)
+  - flutter_archive (from `.symlinks/plugins/flutter_archive/ios`)
+  - flutter_downloader (from `.symlinks/plugins/flutter_downloader/ios`)
   - media_kit_libs_ios_audio (from `.symlinks/plugins/media_kit_libs_ios_audio/ios`)
   - media_kit_native_event_loop (from `.symlinks/plugins/media_kit_native_event_loop/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
@@ -72,16 +74,17 @@ SPEC REPOS:
     - DKPhotoGallery
     - SDWebImage
     - SwiftyGif
+    - ZIPFoundation
 
 EXTERNAL SOURCES:
-  audio_session:
-    :path: ".symlinks/plugins/audio_session/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
-  just_audio:
-    :path: ".symlinks/plugins/just_audio/ios"
+  flutter_archive:
+    :path: ".symlinks/plugins/flutter_archive/ios"
+  flutter_downloader:
+    :path: ".symlinks/plugins/flutter_downloader/ios"
   media_kit_libs_ios_audio:
     :path: ".symlinks/plugins/media_kit_libs_ios_audio/ios"
   media_kit_native_event_loop:
@@ -94,12 +97,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
 
 SPEC CHECKSUMS:
-  audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
-  file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
+  file_picker: ce3938a0df3cc1ef404671531facef740d03f920
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
+  flutter_archive: 1805fdd3a695fd284b43edb53dc35ca843fb761c
+  flutter_downloader: b7301ae057deadd4b1650dc7c05375f10ff12c39
   media_kit_libs_ios_audio: 8f39d96a9c630685dfb844c289bd1d114c486fb3
   media_kit_native_event_loop: 99111eded5acbdc9c2738021ea6550dd36ca8837
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
@@ -107,6 +110,7 @@ SPEC CHECKSUMS:
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
+  ZIPFoundation: ae5b4b813d216d3bf0a148773267fff14bd51d37
 
 PODFILE CHECKSUM: 6dc5614bdc3e9704c0d9b92674099216f7aca319
 

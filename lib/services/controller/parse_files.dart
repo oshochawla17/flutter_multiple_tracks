@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/instrument_file.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/instrument_file/metronome_file.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_multiple_tracks/services/models/instruments_library/swar
 import 'package:flutter_multiple_tracks/services/models/instruments_library/tabla_pakhawaj_library.dart';
 import 'package:flutter_multiple_tracks/services/models/instruments_library/tanpura_library.dart';
 import 'package:flutter_multiple_tracks/services/models/music_scales.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -216,19 +218,42 @@ class FileParser {
   // }
 
   static Future<Map<Instruments, InstrumentLibrary>> traverseDirectory(
-      String rootPath) async {
-    var uri = Uri.parse(rootPath);
+      String? rootPath) async {
+    var systemTempDir = Directory.systemTemp;
+    var uri = rootPath ?? systemTempDir;
     // var permission = await Permission.storage.request();
     // if (permission.isGranted) {
     //   print('Permission granted');
     // } else {
     //   print('Permission denied');
     // }
-    var systemTempDir1 = Directory.systemTemp;
-    print(systemTempDir1.path);
 
-    var systemTempDir = Directory.fromUri(uri);
+    // print(systemTempDir1.path);
+    // final List<Directory>? appDocumentsDir =
+    //     await getExternalStorageDirectories();
+    // for (var dir in appDocumentsDir!) {
+    //   print(dir.path);
+    // }
+    // await for (var entity
+    //     in appDocumentsDir!.list(recursive: true, followLinks: false)) {
+    //   if (entity is File) {
+    //     print(entity.path);
+    //   }
+    // }
+
+    // var uriDir = Directory.fromUri(uri);
     // await systemTempDir.createTemp('flutter_temp');
+
+    await for (var entity
+        in systemTempDir.list(recursive: true, followLinks: false)) {
+      if (entity is File && entity.path.contains('Audio.zip')) {
+        final zipFile = File(entity.path);
+        ZipFile.extractToDirectory(
+            zipFile: zipFile, destinationDir: systemTempDir);
+        // ZipFile.createFromDirectory(
+        //     sourceDir: systemTempDir, zipFile: zipFile, recurseSubDirs: true);
+      }
+    }
 
     List<String> totalFiles = [];
     await for (var entity

@@ -21,8 +21,27 @@ class _AudioDirectoryLoaderState extends State<AudioDirectoryLoader> {
 
   @override
   Widget build(BuildContext context) {
+    Future updateLibrary() =>
+        FileParser.traverseDirectory(directorySelected).then((libraries) {
+          // var libraryProvider = context.read<LibraryProvider>();
+
+          // libraryProvider.updateLibrary(libraries);
+          TablaPakhawajLibrary tablaLib =
+              (libraries[Instruments.tabla]! as TablaPakhawajLibrary);
+          String? selectedTaal;
+          if (tablaLib.taalFiles.isNotEmpty) {
+            selectedTaal = tablaLib.taalFiles.keys.first;
+          }
+          var globalOptionsProvider = context.read<GlobalOptionsProvider>();
+          var globalOptions = globalOptionsProvider.options
+              .copyWith(selectedTaal: selectedTaal);
+          var globalTrackStatus = context.read<GlobalTrackStatus>();
+          globalTrackStatus.load(libraries);
+          globalTrackStatus.updateFromGlobal(globalOptions);
+          globalOptionsProvider.updateOptions(globalOptions);
+        });
     return FutureBuilder(
-      future: FileParser.currentRootDirectory(),
+      future: updateLibrary(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           updateLibrary() => FileParser.traverseDirectory(directorySelected!)

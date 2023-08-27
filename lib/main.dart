@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_multiple_tracks/screens/sound_blend_home.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
 class FFIBridge {
   static bool initialize() {
@@ -9,8 +10,15 @@ class FFIBridge {
 }
 
 void main() {
-  // traverseDirectory();
+  WidgetsFlutterBinding.ensureInitialized();
+
   MediaKit.ensureInitialized();
+  FlutterDownloader.initialize(
+      debug:
+          true, // optional: set to false to disable printing logs to console (default: true)
+      ignoreSsl:
+          true // option: set to false to disable working with http links (default: false)
+      );
   runApp(const MyApp());
 }
 

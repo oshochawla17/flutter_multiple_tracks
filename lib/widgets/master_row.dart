@@ -4,6 +4,7 @@ import 'package:flutter_multiple_tracks/services/models/track_options.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_options_provider.dart';
 import 'package:flutter_multiple_tracks/services/providers/global_track_status.dart';
 import 'package:flutter_multiple_tracks/widgets/audio_directory.dart';
+import 'package:flutter_multiple_tracks/widgets/audio_directory_downloader.dart';
 import 'package:flutter_multiple_tracks/widgets/clickable_text.dart';
 import 'package:flutter_multiple_tracks/widgets/master_play_button.dart';
 import 'package:flutter_multiple_tracks/widgets/scale_selector.dart';
@@ -61,7 +62,8 @@ class MasterRow extends StatelessWidget {
           ),
         ),
         const MasterPlayButton(),
-        AudioDirectoryLoader(),
+        const AudioDirectoryLoader(),
+        const AudioDirectoryDownloader(),
       ],
     );
   }
