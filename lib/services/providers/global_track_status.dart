@@ -37,8 +37,9 @@ class GlobalTrackStatus extends ChangeNotifier {
         //   playing = true;
         // }
         instrument.play().then((value) {
-          if (value) {
+          if (value && !isPlaying) {
             isPlaying = true;
+            notifyListeners();
           }
         });
       }

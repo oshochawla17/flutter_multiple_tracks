@@ -70,13 +70,13 @@ class MetronomeTrack with ChangeNotifier implements InstrumentTrack {
   void load(InstrumentLibrary library) {
     this.library = library as MetronomeLibrary;
 
-    _playlist.player.stream.playing.listen((event) {
-      if (isPlaying != event) {
-        isPlaying = event;
+    // _playlist.player.stream.playing.listen((event) {
+    //   if (isPlaying != event) {
+    //     isPlaying = event;
 
-        notifyListeners();
-      }
-    });
+    //     notifyListeners();
+    //   }
+    // });
   }
 
   @override

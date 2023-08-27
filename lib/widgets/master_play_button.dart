@@ -9,10 +9,9 @@ class MasterPlayButton extends StatelessWidget {
   const MasterPlayButton({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Consumer2<GlobalTrackStatus, InstrumentsPlayingStatusProvider>(
-        builder: (context, provider, playStatus, child) {
-      bool isPlaying = playStatus.isPlaying();
-      print('.....');
+    return Consumer<GlobalTrackStatus>(builder: (context, provider, child) {
+      bool isPlaying = provider.isPlaying;
+      print('Master Play Button: $isPlaying');
       return ElevatedButton(
         onPressed: () {
           isPlaying ? provider.stop() : provider.play();

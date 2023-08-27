@@ -35,9 +35,9 @@ class SoundBlendHome extends StatelessWidget {
           // ChangeNotifierProvider<LibraryProvider>(
           //   create: (context) => LibraryProvider(),
           // ),
-          ChangeNotifierProvider<InstrumentsPlayingStatusProvider>(
-            create: (context) => InstrumentsPlayingStatusProvider(),
-          ),
+          // ChangeNotifierProvider<InstrumentsPlayingStatusProvider>(
+          //   create: (context) => InstrumentsPlayingStatusProvider(),
+          // ),
         ],
         child: SingleChildScrollView(
           physics: const ClampingScrollPhysics(),

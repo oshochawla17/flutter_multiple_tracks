@@ -94,13 +94,13 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
       selectedSub = library.subfiles.keys.first;
     }
 
-    _playlist.player.stream.playing.listen((event) {
-      if (isPlaying != event) {
-        isPlaying = event;
+    // _playlist.player.stream.playing.listen((event) {
+    //   if (isPlaying != event) {
+    //     isPlaying = event;
 
-        notifyListeners();
-      }
-    });
+    //     notifyListeners();
+    //   }
+    // });
   }
 
   @override

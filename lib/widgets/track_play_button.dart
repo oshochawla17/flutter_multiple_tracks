@@ -14,10 +14,10 @@ class TrackPlayButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<InstrumentTrack>(
       builder: (context, provider, child) {
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          Provider.of<InstrumentsPlayingStatusProvider>(context, listen: false)
-              .updateInstrumentStatus(provider.instrument, provider.isPlaying);
-        });
+        // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        //   Provider.of<InstrumentsPlayingStatusProvider>(context, listen: false)
+        //       .updateInstrumentStatus(provider.instrument, provider.isPlaying);
+        // });
 
         return Container(
           child: ElevatedButton(
