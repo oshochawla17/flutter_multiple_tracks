@@ -76,6 +76,7 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
       await playlist.player.play();
       playing = true;
     }
+    isPlaying = playing;
     notifyListeners();
     return playing;
   }
@@ -83,7 +84,7 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   @override
   Future<bool> stop() async {
     await _playlist.resetPlaylist();
-
+    isPlaying = false;
     return true;
   }
 

@@ -55,6 +55,7 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
       return false;
     }
     await _playlist.player.play();
+    isPlaying = true;
     notifyListeners();
     return resullt;
   }
@@ -65,6 +66,7 @@ class SwarmandalTrack with ChangeNotifier implements InstrumentTrack {
   @override
   Future<bool> stop() async {
     await _playlist.resetPlaylist();
+    isPlaying = false;
     return true;
   }
 

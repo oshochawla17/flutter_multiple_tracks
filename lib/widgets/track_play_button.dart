@@ -37,9 +37,11 @@ class TrackPlayButton extends StatelessWidget {
                       var globalTrackStatus =
                           // ignore: use_build_context_synchronously
                           context.read<GlobalTrackStatus>();
+                      bool playing = false;
                       for (InstrumentTrack instrument
                           in globalTrackStatus.instruments) {
                         if (instrument.isPlaying) {
+                          playing = true;
                           return;
                         }
                       }
