@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
 
-class ClickableText extends StatefulWidget {
+// class ClickableText extends StatefulWidget {
+class ClickableText extends StatelessWidget {
   final int number;
   final int min, max;
   final Function(String) onValueChanged;
@@ -15,24 +16,25 @@ class ClickableText extends StatefulWidget {
       required this.min,
       required this.max});
 
-  @override
-  State<ClickableText> createState() => _ClickableTextState();
-}
+//   @override
+//   State<ClickableText> createState() => _ClickableTextState();
+// }
 
-class _ClickableTextState extends State<ClickableText> {
-  bool _isEditing = false;
-  late TextEditingController _textEditingController;
+// class _ClickableTextState extends State<ClickableText> {
+//   bool _isEditing = false;
+//   late TextEditingController _textEditingController;
 
-  @override
-  void initState() {
-    super.initState();
-    _textEditingController =
-        TextEditingController(text: widget.number.toString());
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     _textEditingController =
+//         TextEditingController(text: widget.number.toString());
+//   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      // width: 50,
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.grey,
@@ -42,69 +44,81 @@ class _ClickableTextState extends State<ClickableText> {
       ),
       // width: 100,
       height: 30,
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _isEditing = true;
-          });
-        },
-        behavior: HitTestBehavior.opaque,
-        child: _isEditing ? _buildEditableText() : _buildText(),
-      ),
-    );
-  }
-
-  Widget _buildText() {
-    return Center(
-      child: Text(
-        widget.formatText(widget.number.toString()),
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEditableText() {
-    return TextFormField(
-      inputFormatters: const [
-        PitchInputFormatter(
-          decimalRange: 2,
-        ),
-      ],
-      textInputAction: TextInputAction.done,
-      keyboardType:
-          const TextInputType.numberWithOptions(decimal: true, signed: true),
-      textAlign: TextAlign.center,
-      style: const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.bold,
-      ),
-      controller: _textEditingController,
-      autofocus: true,
-      onFieldSubmitted: (value) {
-        setState(() {
-          _isEditing = false;
-          widget.onValueChanged(value);
-          var tryParse = num.tryParse(value);
-          if (tryParse != null) {
-            if (tryParse < widget.min) {
-              _textEditingController.text = widget.min.toString();
-            } else if (tryParse > widget.max) {
-              _textEditingController.text = widget.max.toString();
+      child: Align(
+        alignment: Alignment.center,
+        child: TextField(
+          textAlign: TextAlign.center,
+          controller: TextEditingController(
+            text: formatText(number.toString()),
+          ),
+          keyboardType: TextInputType.number,
+          // inputFormatters: <TextInputFormatter>[
+          // FilteringTextInputFormatter.digitsOnly
+          // ],
+          // initialValue: number.toString(),
+          onChanged: (value) {
+            var tryParse = int.tryParse(value);
+            if (tryParse == null) {
+              return;
             }
-          }
-        });
-      },
-      onEditingComplete: () {
-        setState(() {
-          _isEditing = false;
-          widget.onValueChanged(_textEditingController.text);
-        });
-      },
+            onValueChanged(value);
+          },
+        ),
+      ),
     );
   }
+
+  // Widget _buildText() {
+  //   return Center(
+  //     child: Text(
+  //       widget.formatText(widget.number.toString()),
+  //       style: const TextStyle(
+  //         fontSize: 14,
+  //         fontWeight: FontWeight.bold,
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  // Widget _buildEditableText() {
+  //   return TextFormField(
+  //     inputFormatters: const [
+  //       PitchInputFormatter(
+  //         decimalRange: 2,
+  //       ),
+  //     ],
+  //     textInputAction: TextInputAction.done,
+  //     keyboardType:
+  //         const TextInputType.numberWithOptions(decimal: true, signed: true),
+  //     textAlign: TextAlign.center,
+  //     style: const TextStyle(
+  //       fontSize: 14,
+  //       fontWeight: FontWeight.bold,
+  //     ),
+  //     controller: _textEditingController,
+  //     autofocus: true,
+  //     onFieldSubmitted: (value) {
+  //       setState(() {
+  //         _isEditing = false;
+  //         widget.onValueChanged(value);
+  //         var tryParse = num.tryParse(value);
+  //         if (tryParse != null) {
+  //           if (tryParse < widget.min) {
+  //             _textEditingController.text = widget.min.toString();
+  //           } else if (tryParse > widget.max) {
+  //             _textEditingController.text = widget.max.toString();
+  //           }
+  //         }
+  //       });
+  //     },
+  //     onEditingComplete: () {
+  //       setState(() {
+  //         _isEditing = false;
+  //         widget.onValueChanged(_textEditingController.text);
+  //       });
+  //     },
+  //   );
+  // }
 }
 
 class PitchInputFormatter extends TextInputFormatter {

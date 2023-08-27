@@ -114,11 +114,11 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
   @override
   Future<bool> setPitch(
       int cents, SoundBlendGlobalOptions globalOptions) async {
-    // var pitchFactor =
-    //     AudioHelper.semitonesToPitchFactor((globalOptions.pitch / 100));
-    // for (var element in playlists) {
-    //   await element.player.setPitch(pitchFactor);
-    // }
+    var pitchFactor =
+        AudioHelper.semitonesToPitchFactor((globalOptions.pitch / 100));
+    for (var element in playlists) {
+      await element.player.setPitch(pitchFactor);
+    }
     return true;
   }
 
@@ -167,7 +167,9 @@ class TanpuraTrack with ChangeNotifier implements InstrumentTrack {
         semitonesDifference += (index - originalIndex).toDouble();
       }
       var pitchFactor = AudioHelper.semitonesToPitchFactor(semitonesDifference);
-      // await _playlist.player.setPitch(pitchFactor);
+      if (_playlist.player.state.pitch != pitchFactor) {
+        await _playlist.player.setPitch(pitchFactor);
+      }
       // await _playlist.player.setRate(trackOptions.tempo! / originalTempo);
     }
     if (beforePlaying) {
